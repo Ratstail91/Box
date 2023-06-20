@@ -19,6 +19,7 @@ Make sure the program can see the `assets` folder (symbolic links can help), and
 * SDL2
 * SDL2_image
 * SDL2_ttf
+* libcurses (for debugging only)
 
 # License
 
