@@ -8,7 +8,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Box", "Box.vcxproj", "{2937
 		{26360002-CC2A-469A-9B28-BA0C1AF41657} = {26360002-CC2A-469A-9B28-BA0C1AF41657}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Toy", "..\Toy\Toy.vcxproj", "{26360002-CC2A-469A-9B28-BA0C1AF41657}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Toy", "Toy\Toy.vcxproj", "{26360002-CC2A-469A-9B28-BA0C1AF41657}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
