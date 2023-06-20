@@ -49,6 +49,7 @@ void Dbg_clearConsole()
 #else // !_WIN32
 #include <unistd.h>
 #include <term.h>
+#include <string.h>
 
 void Dbg_clearConsole()
 {
