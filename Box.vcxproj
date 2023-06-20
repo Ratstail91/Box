@@ -70,6 +70,12 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)out\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)out\$(Configuration)\</OutDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -118,8 +124,7 @@
       </Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>xcopy "$(SolutionDir)Toy\repl\lib*.*" "$(SolutionDir)source" /Y /I /E
-xcopy "$(SolutionDir)Toy\repl\repl_tools.*" "$(SolutionDir)source" /Y /I /E</Command>
+      <Command>./copy_libs.bat</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -146,8 +151,7 @@ xcopy "$(SolutionDir)Toy\repl\repl_tools.*" "$(SolutionDir)source" /Y /I /E</Com
       </Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>xcopy "$(SolutionDir)Toy\repl\lib*.*" "$(SolutionDir)source" /Y /I /E
-xcopy "$(SolutionDir)Toy\repl\repl_tools.*" "$(SolutionDir)source" /Y /I /E</Command>
+      <Command>./copy_libs.bat</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
