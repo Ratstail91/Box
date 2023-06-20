@@ -118,7 +118,8 @@
       </Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>xcopy "$(SolutionDir)Toy\repl\lib*.*" "$(SolutionDir)box" /Y /I /E</Command>
+      <Command>xcopy "$(SolutionDir)Toy\repl\lib*.*" "$(SolutionDir)source" /Y /I /E
+xcopy "$(SolutionDir)Toy\repl\repl_tools.*" "$(SolutionDir)source" /Y /I /E</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -145,7 +146,8 @@
       </Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>xcopy "$(SolutionDir)Toy\repl\lib*.*" "$(SolutionDir)box" /Y /I /E</Command>
+      <Command>xcopy "$(SolutionDir)Toy\repl\lib*.*" "$(SolutionDir)source" /Y /I /E
+xcopy "$(SolutionDir)Toy\repl\repl_tools.*" "$(SolutionDir)source" /Y /I /E</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
