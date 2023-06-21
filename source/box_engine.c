@@ -448,9 +448,9 @@ void Box_execEngine() {
 	}
 
 	//set up time
-	engine.realTime = clock();
+	engine.realTime = SDL_GetTicks();
 	engine.simTime = engine.realTime;
-	clock_t delta = (double) CLOCKS_PER_SEC / 60.0;
+	const int delta = 1000 / 60;
 
 	Dbg_Timer dbgTimer;
 	Dbg_FPSCounter fps;
@@ -474,7 +474,7 @@ void Box_execEngine() {
 		Dbg_stopTimer(&dbgTimer);
 
 		//calc the time passed
-		engine.realTime = clock();
+		engine.realTime = SDL_GetTicks();
 
 		Dbg_startTimer(&dbgTimer, "execStep() (variable)");
 		//while not enough time has passed

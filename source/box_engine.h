@@ -14,8 +14,8 @@ typedef struct Box_private_engine {
 	//engine stuff
 	Box_Node* rootNode;
 	Toy_Literal nextRootNodeFilename;
-	clock_t simTime;
-	clock_t realTime;
+	int simTime;
+	int realTime;
 	bool running;
 
 	//Toy stuff
