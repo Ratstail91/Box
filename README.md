@@ -8,7 +8,11 @@ Either clone recursively, or run `git submodule update --init` after cloning.
 
 ## Building
 
-This currently only builds under linux - MSVC builds are coming soon!
+For Windows(mingw32 & cygwin), Linux and MacOS, simply run `make` in the root directory.
+
+For Windows(MSVC), Visual Studio project files are included.
+
+Note: MacOS and Windows(MSVC) are not officially supported, but we'll do our best!
 
 ## Running
 
@@ -28,5 +32,3 @@ This source code is covered by the zlib license (see [LICENSE.md](LICENSE.md)).
 # Patrons via Patreon
 
 * Seth A. Robinson
-
-Special thanks to http://craftinginterpreters.com/ for their fantastic book that set me on this path.
