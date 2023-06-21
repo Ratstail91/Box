@@ -19,6 +19,7 @@
 #include "toy_literal_dictionary.h"
 
 #include "toy_console_colors.h"
+#include "toy_drive_system.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,12 +30,12 @@ Box_Engine engine;
 
 //errors here should be fatal
 static void fatalError(char* message) {
-	fprintf(stderr, TOY_CC_ERROR "%s" TOY_CC_RESET, message);
+	fprintf(stderr, TOY_CC_ERROR "%s\n" TOY_CC_RESET, message);
 	exit(-1);
 }
 
 //exposed functions
-void Box_initEngine() {
+void Box_initEngine(const char* initScript) {
 	//clear
 	engine.rootNode = NULL;
 	engine.nextRootNodeFilename = TOY_TO_NULL_LITERAL;
@@ -72,14 +73,35 @@ void Box_initEngine() {
 	Toy_injectNativeHook(&engine.interpreter, "node", Box_hookNode);
 	Toy_injectNativeHook(&engine.interpreter, "input", Box_hookInput);
 
-	//run the init
-	size_t size = 0;
-	const unsigned char* source = Toy_readFile("./assets/scripts/init.toy", &size);
+	//load the initScript with the drive path system
+	Toy_Literal scriptLiteral = TOY_TO_STRING_LITERAL(Toy_createRefString(initScript));
+	Toy_Literal driveLiteral = Toy_getDrivePathLiteral(&engine.interpreter, &scriptLiteral); //only takes the interpreter for the error function
 
-	if (!source) {
-		fatalError("Couldn't read /assets/scripts/init.toy");
+	if (TOY_IS_NULL(driveLiteral)) {
+		Toy_printLiteral(scriptLiteral);
+
+		Toy_freeLiteral(scriptLiteral);
+		Toy_freeLiteral(driveLiteral);
+
+		fatalError("Couldn't read null drive literal");
 	}
 
+	size_t size = 0;
+	const unsigned char* source = Toy_readFile(Toy_toCString(TOY_AS_STRING(driveLiteral)), &size);
+
+	if (!source) {
+		Toy_printLiteral(driveLiteral);
+
+		Toy_freeLiteral(scriptLiteral);
+		Toy_freeLiteral(driveLiteral);
+
+		fatalError("Couldn't read the given file");
+	}
+
+	Toy_freeLiteral(scriptLiteral);
+	Toy_freeLiteral(driveLiteral);
+
+	//compile the source to bytecode
 	const unsigned char* tb = Toy_compileString((const char*)source, &size);
 	free((void*)source);
 

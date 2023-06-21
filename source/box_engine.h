@@ -36,7 +36,7 @@ typedef struct Box_private_engine {
 extern Box_Engine engine;
 
 //APIs for running the engine in main()
-BOX_API void Box_initEngine();
+BOX_API void Box_initEngine(const char* initScript);
 BOX_API void Box_execEngine();
 BOX_API void Box_freeEngine();
 
