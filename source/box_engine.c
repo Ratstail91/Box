@@ -433,6 +433,9 @@ static inline void execEvents() {
 
 static inline void execStep() {
 	if (engine.rootNode != NULL) {
+		//move nodes first, so collisions can be checked in code
+		Box_movePositionByMotionRecursiveNode(engine.rootNode);
+
 		//steps
 		Box_callRecursiveNode(engine.rootNode, &engine.interpreter, "onStep", NULL);
 	}
@@ -447,7 +450,7 @@ void Box_execEngine() {
 	//set up time
 	engine.realTime = clock();
 	engine.simTime = engine.realTime;
-	clock_t delta = (double) CLOCKS_PER_SEC / 30.0;
+	clock_t delta = (double) CLOCKS_PER_SEC / 60.0;
 
 	Dbg_Timer dbgTimer;
 	Dbg_FPSCounter fps;

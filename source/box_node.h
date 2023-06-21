@@ -12,17 +12,14 @@ typedef struct Box_private_node Box_Node;
 
 //the node object, which forms a tree
 typedef struct Box_private_node {
+	//BUGFIX: hold the node's root scope so it can be popped
+	Toy_Scope* scope; //used by nativeLoadNode
+
 	//toy functions, stored in a dict for flexibility
 	Toy_LiteralDictionary* functions;
 
-	//point to the parent
+	//cache the parent pointer for fast access
 	Box_Node* parent;
-
-	//BUGFIX: hold the node's scope so it can be popped
-	Toy_Scope* scope;
-
-	//my opaque type tag
-	int tag;
 
 	//use Toy's memory model
 	Box_Node** children;
@@ -35,13 +32,19 @@ typedef struct Box_private_node {
 	SDL_Rect rect; //rendered rect
 	int frames; //horizontal-strip based animations
 	int currentFrame;
+
+	//position & motion, relative to my parent
+	int positionX;
+	int positionY;
+	int motionX;
+	int motionY;
 } Box_Node;
 
 BOX_API void Box_initNode(Box_Node* node, Toy_Interpreter* interpreter, const unsigned char* tb, size_t size); //run bytecode, then grab all top-level function literals
 BOX_API void Box_pushNode(Box_Node* node, Box_Node* child); //push to the array (prune tombstones when expanding/copying)
 BOX_API void Box_freeNode(Box_Node* node); //free this node and all children
 
-BOX_API Box_Node* Box_getChildNode(Box_Node* node, int index);
+BOX_API Box_Node* Box_getChildNode(Box_Node* node, int index); //NOTE: indexes are no longer valid after sorting
 BOX_API void Box_freeChildNode(Box_Node* node, int index);
 
 BOX_API void Box_sortChildrenNode(Box_Node* node, Toy_Interpreter* interpreter, Toy_Literal fnCompare);
@@ -67,6 +70,20 @@ BOX_API void Box_setCurrentFrameNode(Box_Node* node, int currentFrame);
 BOX_API int Box_getCurrentFrameNode(Box_Node* node);
 BOX_API void Box_incrementCurrentFrame(Box_Node* node);
 
+BOX_API void Box_setPositionXNode(Box_Node* node, int x);
+BOX_API void Box_setPositionYNode(Box_Node* node, int y);
+BOX_API void Box_setMotionXNode(Box_Node* node, int x);
+BOX_API void Box_setMotionYNode(Box_Node* node, int y);
+
+BOX_API int Box_getPositionXNode(Box_Node* node);
+BOX_API int Box_getPositionYNode(Box_Node* node);
+BOX_API int Box_getMotionXNode(Box_Node* node);
+BOX_API int Box_getMotionYNode(Box_Node* node);
+
+BOX_API void Box_movePositionByMotionNode(Box_Node* node);
+BOX_API void Box_movePositionByMotionRecursiveNode(Box_Node* node);
+
+//utilities
 BOX_API void Box_setTextNode(Box_Node* node, TTF_Font* font, const char* text, SDL_Color color);
 
 BOX_API void Box_drawNode(Box_Node* node, SDL_Rect dest);

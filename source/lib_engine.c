@@ -148,7 +148,7 @@ static int nativeGetRootNode(Toy_Interpreter* interpreter, Toy_LiteralArray* arg
 		return -1;
 	}
 
-	Toy_Literal resultLiteral = TOY_TO_OPAQUE_LITERAL(engine.rootNode, engine.rootNode->tag);
+	Toy_Literal resultLiteral = TOY_TO_OPAQUE_LITERAL(engine.rootNode, OPAQUE_TAG_NODE);
 
 	Toy_pushLiteralArray(&interpreter->stack, resultLiteral);
 

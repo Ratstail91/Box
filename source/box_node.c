@@ -5,11 +5,9 @@
 
 void Box_initNode(Box_Node* node, Toy_Interpreter* interpreter, const unsigned char* tb, size_t size) {
 	//init
-	// node->freeMemory = freeMemory;
+	node->scope = NULL;
 	node->functions = TOY_ALLOCATE(Toy_LiteralDictionary, 1);
 	node->parent = NULL;
-	node->scope = NULL;
-	node->tag = OPAQUE_TAG_NODE;
 	node->children = NULL;
 	node->capacity = 0;
 	node->count = 0;
@@ -17,6 +15,11 @@ void Box_initNode(Box_Node* node, Toy_Interpreter* interpreter, const unsigned c
 	node->texture = NULL;
 	node->rect = ((SDL_Rect) { 0, 0, 0, 0 });
 	node->frames = 0;
+	node->currentFrame = 0;
+	node->positionX = 0;
+	node->positionY = 0;
+	node->motionX = 0;
+	node->motionY = 0;
 
 	Toy_initLiteralDictionary(node->functions);
 
@@ -220,7 +223,7 @@ Toy_Literal Box_callNodeLiteral(Box_Node* node, Toy_Interpreter* interpreter, To
 	//if this fn exists
 	if (Toy_existsLiteralDictionary(node->functions, key)) {
 		Toy_Literal fn = Toy_getLiteralDictionary(node->functions, key);
-		Toy_Literal n = TOY_TO_OPAQUE_LITERAL(node, node->tag);
+		Toy_Literal n = TOY_TO_OPAQUE_LITERAL(node, OPAQUE_TAG_NODE);
 
 		Toy_LiteralArray arguments;
 		Toy_LiteralArray returns;
@@ -265,7 +268,7 @@ void Box_callRecursiveNodeLiteral(Box_Node* node, Toy_Interpreter* interpreter, 
 	//if this fn exists
 	if (Toy_existsLiteralDictionary(node->functions, key)) {
 		Toy_Literal fn = Toy_getLiteralDictionary(node->functions, key);
-		Toy_Literal n = TOY_TO_OPAQUE_LITERAL(node, node->tag);
+		Toy_Literal n = TOY_TO_OPAQUE_LITERAL(node, OPAQUE_TAG_NODE);
 
 		Toy_LiteralArray arguments;
 		Toy_LiteralArray returns;
@@ -371,6 +374,53 @@ void Box_incrementCurrentFrame(Box_Node* node) {
 	node->currentFrame++;
 	if (node->currentFrame >= node->frames) {
 		node->currentFrame = 0;
+	}
+}
+
+void Box_setPositionXNode(Box_Node* node, int x) {
+	node->positionX = x;
+}
+
+void Box_setPositionYNode(Box_Node* node, int y) {
+	node->positionY = y;
+}
+
+void Box_setMotionXNode(Box_Node* node, int x) {
+	node->motionX = x;
+}
+void Box_setMotionYNode(Box_Node* node, int y) {
+	node->motionY = y;
+}
+
+int Box_getPositionXNode(Box_Node* node) {
+	return node->positionX;
+}
+
+int Box_getPositionYNode(Box_Node* node) {
+	return node->positionY;
+}
+
+int Box_getMotionXNode(Box_Node* node) {
+	return node->motionX;
+}
+
+int Box_getMotionYNode(Box_Node* node) {
+	return node->motionY;
+}
+
+void Box_movePositionByMotionNode(Box_Node* node) {
+	node->positionX += node->motionX;
+	node->positionY += node->motionY;
+}
+
+void Box_movePositionByMotionRecursiveNode(Box_Node* node) {
+	Box_movePositionByMotionNode(node);
+
+	//recurse to the (non-tombstone) children
+	for (int i = 0; i < node->count; i++) {
+		if (node->children[i] != NULL) {
+			Box_movePositionByMotionRecursiveNode(node->children[i]);
+		}
 	}
 }
 
