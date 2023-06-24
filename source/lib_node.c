@@ -996,6 +996,86 @@ static int nativeSetNodeMotionY(Toy_Interpreter* interpreter, Toy_LiteralArray* 
 	return 0;
 }
 
+static int nativeSetNodeScaleX(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
+	if (arguments->count != 2) {
+		interpreter->errorOutput("Incorrect number of arguments passed to setNodeScaleX\n");
+		return -1;
+	}
+
+	//extract the arguments
+	Toy_Literal scaleLiteral = Toy_popLiteralArray(arguments);
+	Toy_Literal nodeLiteral = Toy_popLiteralArray(arguments);
+
+	Toy_Literal nodeIdn = nodeLiteral;
+	if (TOY_IS_IDENTIFIER(nodeLiteral) && Toy_parseIdentifierToValue(interpreter, &nodeLiteral)) {
+		Toy_freeLiteral(nodeIdn);
+	}
+
+	Toy_Literal scaleLiteralIdn = scaleLiteral;
+	if (TOY_IS_IDENTIFIER(scaleLiteral) && Toy_parseIdentifierToValue(interpreter, &scaleLiteral)) {
+		Toy_freeLiteral(scaleLiteralIdn);
+	}
+
+	//check argument types
+	if (!TOY_IS_OPAQUE(nodeLiteral) || !TOY_IS_FLOAT(scaleLiteral) || TOY_GET_OPAQUE_TAG(nodeLiteral) != OPAQUE_TAG_NODE) {
+		interpreter->errorOutput("Incorrect argument type passed to setNodeScaleX\n");
+		Toy_freeLiteral(nodeLiteral);
+		Toy_freeLiteral(scaleLiteral);
+		return -1;
+	}
+
+	//actually set
+	Box_Node* node = (Box_Node*)TOY_AS_OPAQUE(nodeLiteral);
+
+	Box_setScaleXNode(node, TOY_AS_FLOAT(scaleLiteral));
+
+	//cleanup
+	Toy_freeLiteral(nodeLiteral);
+	Toy_freeLiteral(scaleLiteral);
+
+	return 0;
+}
+
+static int nativeSetNodeScaleY(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
+	if (arguments->count != 2) {
+		interpreter->errorOutput("Incorrect number of arguments passed to setNodeScaleY\n");
+		return -1;
+	}
+
+	//extract the arguments
+	Toy_Literal scaleLiteral = Toy_popLiteralArray(arguments);
+	Toy_Literal nodeLiteral = Toy_popLiteralArray(arguments);
+
+	Toy_Literal nodeIdn = nodeLiteral;
+	if (TOY_IS_IDENTIFIER(nodeLiteral) && Toy_parseIdentifierToValue(interpreter, &nodeLiteral)) {
+		Toy_freeLiteral(nodeIdn);
+	}
+
+	Toy_Literal scaleLiteralIdn = scaleLiteral;
+	if (TOY_IS_IDENTIFIER(scaleLiteral) && Toy_parseIdentifierToValue(interpreter, &scaleLiteral)) {
+		Toy_freeLiteral(scaleLiteralIdn);
+	}
+
+	//check argument types
+	if (!TOY_IS_OPAQUE(nodeLiteral) || !TOY_IS_FLOAT(scaleLiteral) || TOY_GET_OPAQUE_TAG(nodeLiteral) != OPAQUE_TAG_NODE) {
+		interpreter->errorOutput("Incorrect argument type passed to setNodeScaleY\n");
+		Toy_freeLiteral(nodeLiteral);
+		Toy_freeLiteral(scaleLiteral);
+		return -1;
+	}
+
+	//actually set
+	Box_Node* node = (Box_Node*)TOY_AS_OPAQUE(nodeLiteral);
+
+	Box_setScaleYNode(node, TOY_AS_FLOAT(scaleLiteral));
+
+	//cleanup
+	Toy_freeLiteral(nodeLiteral);
+	Toy_freeLiteral(scaleLiteral);
+
+	return 0;
+}
+
 static int nativeGetNodePositionX(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
 	if (arguments->count != 1) {
 		interpreter->errorOutput("Incorrect number of arguments passed to getNodePositionX\n");
@@ -1019,7 +1099,7 @@ static int nativeGetNodePositionX(Toy_Interpreter* interpreter, Toy_LiteralArray
 
 	//actually get
 	Box_Node* node = (Box_Node*)TOY_AS_OPAQUE(nodeLiteral);
-	Toy_Literal positionLiteral = TOY_TO_INTEGER_LITERAL(node->positionX);
+	Toy_Literal positionLiteral = TOY_TO_INTEGER_LITERAL(Box_getPositionXNode(node));
 
 	Toy_pushLiteralArray(&interpreter->stack, positionLiteral);
 
@@ -1053,7 +1133,7 @@ static int nativeGetNodePositionY(Toy_Interpreter* interpreter, Toy_LiteralArray
 
 	//actually get
 	Box_Node* node = (Box_Node*)TOY_AS_OPAQUE(nodeLiteral);
-	Toy_Literal positionLiteral = TOY_TO_INTEGER_LITERAL(node->positionY);
+	Toy_Literal positionLiteral = TOY_TO_INTEGER_LITERAL(Box_getPositionYNode(node));
 
 	Toy_pushLiteralArray(&interpreter->stack, positionLiteral);
 
@@ -1087,7 +1167,7 @@ static int nativeGetNodeMotionX(Toy_Interpreter* interpreter, Toy_LiteralArray* 
 
 	//actually get
 	Box_Node* node = (Box_Node*)TOY_AS_OPAQUE(nodeLiteral);
-	Toy_Literal motionLiteral = TOY_TO_INTEGER_LITERAL(node->motionX);
+	Toy_Literal motionLiteral = TOY_TO_INTEGER_LITERAL(Box_getMotionXNode(node));
 
 	Toy_pushLiteralArray(&interpreter->stack, motionLiteral);
 
@@ -1121,13 +1201,285 @@ static int nativeGetNodeMotionY(Toy_Interpreter* interpreter, Toy_LiteralArray* 
 
 	//actually get
 	Box_Node* node = (Box_Node*)TOY_AS_OPAQUE(nodeLiteral);
-	Toy_Literal motionLiteral = TOY_TO_INTEGER_LITERAL(node->motionY);
+	Toy_Literal motionLiteral = TOY_TO_INTEGER_LITERAL(Box_getMotionYNode(node));
 
 	Toy_pushLiteralArray(&interpreter->stack, motionLiteral);
 
 	//cleanup
 	Toy_freeLiteral(nodeLiteral);
 	Toy_freeLiteral(motionLiteral);
+
+	return 1;
+}
+
+static int nativeGetNodeScaleX(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
+	if (arguments->count != 1) {
+		interpreter->errorOutput("Incorrect number of arguments passed to getNodeScaleX\n");
+		return -1;
+	}
+
+	//extract the arguments
+	Toy_Literal nodeLiteral = Toy_popLiteralArray(arguments);
+
+	Toy_Literal nodeIdn = nodeLiteral;
+	if (TOY_IS_IDENTIFIER(nodeLiteral) && Toy_parseIdentifierToValue(interpreter, &nodeLiteral)) {
+		Toy_freeLiteral(nodeIdn);
+	}
+
+	//check argument types
+	if (!TOY_IS_OPAQUE(nodeLiteral) || TOY_GET_OPAQUE_TAG(nodeLiteral) != OPAQUE_TAG_NODE) {
+		interpreter->errorOutput("Incorrect argument type passed to getNodeScaleX\n");
+		Toy_freeLiteral(nodeLiteral);
+		return -1;
+	}
+
+	//actually get
+	Box_Node* node = (Box_Node*)TOY_AS_OPAQUE(nodeLiteral);
+	Toy_Literal scaleLiteral = TOY_TO_FLOAT_LITERAL(Box_getScaleXNode(node));
+
+	Toy_pushLiteralArray(&interpreter->stack, scaleLiteral);
+
+	//cleanup
+	Toy_freeLiteral(nodeLiteral);
+	Toy_freeLiteral(scaleLiteral);
+
+	return 1;
+}
+
+static int nativeGetNodeScaleY(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
+	if (arguments->count != 1) {
+		interpreter->errorOutput("Incorrect number of arguments passed to getNodeScaleY\n");
+		return -1;
+	}
+
+	//extract the arguments
+	Toy_Literal nodeLiteral = Toy_popLiteralArray(arguments);
+
+	Toy_Literal nodeIdn = nodeLiteral;
+	if (TOY_IS_IDENTIFIER(nodeLiteral) && Toy_parseIdentifierToValue(interpreter, &nodeLiteral)) {
+		Toy_freeLiteral(nodeIdn);
+	}
+
+	//check argument types
+	if (!TOY_IS_OPAQUE(nodeLiteral) || TOY_GET_OPAQUE_TAG(nodeLiteral) != OPAQUE_TAG_NODE) {
+		interpreter->errorOutput("Incorrect argument type passed to getNodeScaleY\n");
+		Toy_freeLiteral(nodeLiteral);
+		return -1;
+	}
+
+	//actually get
+	Box_Node* node = (Box_Node*)TOY_AS_OPAQUE(nodeLiteral);
+	Toy_Literal scaleLiteral = TOY_TO_FLOAT_LITERAL(Box_getScaleYNode(node));
+
+	Toy_pushLiteralArray(&interpreter->stack, scaleLiteral);
+
+	//cleanup
+	Toy_freeLiteral(nodeLiteral);
+	Toy_freeLiteral(scaleLiteral);
+
+	return 1;
+}
+
+static int nativeGetNodeWorldPositionX(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
+	if (arguments->count != 1) {
+		interpreter->errorOutput("Incorrect number of arguments passed to getNodeWorldPositionX\n");
+		return -1;
+	}
+
+	//extract the arguments
+	Toy_Literal nodeLiteral = Toy_popLiteralArray(arguments);
+
+	Toy_Literal nodeIdn = nodeLiteral;
+	if (TOY_IS_IDENTIFIER(nodeLiteral) && Toy_parseIdentifierToValue(interpreter, &nodeLiteral)) {
+		Toy_freeLiteral(nodeIdn);
+	}
+
+	//check argument types
+	if (!TOY_IS_OPAQUE(nodeLiteral) || TOY_GET_OPAQUE_TAG(nodeLiteral) != OPAQUE_TAG_NODE) {
+		interpreter->errorOutput("Incorrect argument type passed to getNodeWorldPositionX\n");
+		Toy_freeLiteral(nodeLiteral);
+		return -1;
+	}
+
+	//actually get
+	Box_Node* node = (Box_Node*)TOY_AS_OPAQUE(nodeLiteral);
+	Toy_Literal positionLiteral = TOY_TO_INTEGER_LITERAL(Box_getWorldPositionXNode(node));
+
+	Toy_pushLiteralArray(&interpreter->stack, positionLiteral);
+
+	//cleanup
+	Toy_freeLiteral(nodeLiteral);
+	Toy_freeLiteral(positionLiteral);
+
+	return 1;
+}
+
+static int nativeGetNodeWorldPositionY(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
+	if (arguments->count != 1) {
+		interpreter->errorOutput("Incorrect number of arguments passed to getNodeWorldPositionY\n");
+		return -1;
+	}
+
+	//extract the arguments
+	Toy_Literal nodeLiteral = Toy_popLiteralArray(arguments);
+
+	Toy_Literal nodeIdn = nodeLiteral;
+	if (TOY_IS_IDENTIFIER(nodeLiteral) && Toy_parseIdentifierToValue(interpreter, &nodeLiteral)) {
+		Toy_freeLiteral(nodeIdn);
+	}
+
+	//check argument types
+	if (!TOY_IS_OPAQUE(nodeLiteral) || TOY_GET_OPAQUE_TAG(nodeLiteral) != OPAQUE_TAG_NODE) {
+		interpreter->errorOutput("Incorrect argument type passed to getNodeWorldPositionY\n");
+		Toy_freeLiteral(nodeLiteral);
+		return -1;
+	}
+
+	//actually get
+	Box_Node* node = (Box_Node*)TOY_AS_OPAQUE(nodeLiteral);
+	Toy_Literal positionLiteral = TOY_TO_INTEGER_LITERAL(Box_getWorldPositionYNode(node));
+
+	Toy_pushLiteralArray(&interpreter->stack, positionLiteral);
+
+	//cleanup
+	Toy_freeLiteral(nodeLiteral);
+	Toy_freeLiteral(positionLiteral);
+
+	return 1;
+}
+
+static int nativeGetNodeWorldMotionX(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
+	if (arguments->count != 1) {
+		interpreter->errorOutput("Incorrect number of arguments passed to getNodeWorldMotionX\n");
+		return -1;
+	}
+
+	//extract the arguments
+	Toy_Literal nodeLiteral = Toy_popLiteralArray(arguments);
+
+	Toy_Literal nodeIdn = nodeLiteral;
+	if (TOY_IS_IDENTIFIER(nodeLiteral) && Toy_parseIdentifierToValue(interpreter, &nodeLiteral)) {
+		Toy_freeLiteral(nodeIdn);
+	}
+
+	//check argument types
+	if (!TOY_IS_OPAQUE(nodeLiteral) || TOY_GET_OPAQUE_TAG(nodeLiteral) != OPAQUE_TAG_NODE) {
+		interpreter->errorOutput("Incorrect argument type passed to getNodeWorldMotionX\n");
+		Toy_freeLiteral(nodeLiteral);
+		return -1;
+	}
+
+	//actually get
+	Box_Node* node = (Box_Node*)TOY_AS_OPAQUE(nodeLiteral);
+	Toy_Literal motionLiteral = TOY_TO_INTEGER_LITERAL(Box_getWorldMotionXNode(node));
+
+	Toy_pushLiteralArray(&interpreter->stack, motionLiteral);
+
+	//cleanup
+	Toy_freeLiteral(nodeLiteral);
+	Toy_freeLiteral(motionLiteral);
+
+	return 1;
+}
+
+static int nativeGetNodeWorldMotionY(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
+	if (arguments->count != 1) {
+		interpreter->errorOutput("Incorrect number of arguments passed to getNodeWorldMotionY\n");
+		return -1;
+	}
+
+	//extract the arguments
+	Toy_Literal nodeLiteral = Toy_popLiteralArray(arguments);
+
+	Toy_Literal nodeIdn = nodeLiteral;
+	if (TOY_IS_IDENTIFIER(nodeLiteral) && Toy_parseIdentifierToValue(interpreter, &nodeLiteral)) {
+		Toy_freeLiteral(nodeIdn);
+	}
+
+	//check argument types
+	if (!TOY_IS_OPAQUE(nodeLiteral) || TOY_GET_OPAQUE_TAG(nodeLiteral) != OPAQUE_TAG_NODE) {
+		interpreter->errorOutput("Incorrect argument type passed to getNodeWorldMotionY\n");
+		Toy_freeLiteral(nodeLiteral);
+		return -1;
+	}
+
+	//actually get
+	Box_Node* node = (Box_Node*)TOY_AS_OPAQUE(nodeLiteral);
+	Toy_Literal motionLiteral = TOY_TO_INTEGER_LITERAL(Box_getWorldMotionYNode(node));
+
+	Toy_pushLiteralArray(&interpreter->stack, motionLiteral);
+
+	//cleanup
+	Toy_freeLiteral(nodeLiteral);
+	Toy_freeLiteral(motionLiteral);
+
+	return 1;
+}
+
+static int nativeGetNodeWorldScaleX(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
+	if (arguments->count != 1) {
+		interpreter->errorOutput("Incorrect number of arguments passed to getNodeWorldScaleX\n");
+		return -1;
+	}
+
+	//extract the arguments
+	Toy_Literal nodeLiteral = Toy_popLiteralArray(arguments);
+
+	Toy_Literal nodeIdn = nodeLiteral;
+	if (TOY_IS_IDENTIFIER(nodeLiteral) && Toy_parseIdentifierToValue(interpreter, &nodeLiteral)) {
+		Toy_freeLiteral(nodeIdn);
+	}
+
+	//check argument types
+	if (!TOY_IS_OPAQUE(nodeLiteral) || TOY_GET_OPAQUE_TAG(nodeLiteral) != OPAQUE_TAG_NODE) {
+		interpreter->errorOutput("Incorrect argument type passed to getNodeWorldScaleX\n");
+		Toy_freeLiteral(nodeLiteral);
+		return -1;
+	}
+
+	//actually get
+	Box_Node* node = (Box_Node*)TOY_AS_OPAQUE(nodeLiteral);
+	Toy_Literal scaleLiteral = TOY_TO_FLOAT_LITERAL(Box_getWorldScaleXNode(node));
+
+	Toy_pushLiteralArray(&interpreter->stack, scaleLiteral);
+
+	//cleanup
+	Toy_freeLiteral(nodeLiteral);
+	Toy_freeLiteral(scaleLiteral);
+
+	return 1;
+}
+
+static int nativeGetNodeWorldScaleY(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
+	if (arguments->count != 1) {
+		interpreter->errorOutput("Incorrect number of arguments passed to getNodeWorldScaleY\n");
+		return -1;
+	}
+
+	//extract the arguments
+	Toy_Literal nodeLiteral = Toy_popLiteralArray(arguments);
+
+	Toy_Literal nodeIdn = nodeLiteral;
+	if (TOY_IS_IDENTIFIER(nodeLiteral) && Toy_parseIdentifierToValue(interpreter, &nodeLiteral)) {
+		Toy_freeLiteral(nodeIdn);
+	}
+
+	//check argument types
+	if (!TOY_IS_OPAQUE(nodeLiteral) || TOY_GET_OPAQUE_TAG(nodeLiteral) != OPAQUE_TAG_NODE) {
+		interpreter->errorOutput("Incorrect argument type passed to getNodeWorldScaleY\n");
+		Toy_freeLiteral(nodeLiteral);
+		return -1;
+	}
+
+	//actually get
+	Box_Node* node = (Box_Node*)TOY_AS_OPAQUE(nodeLiteral);
+	Toy_Literal scaleLiteral = TOY_TO_FLOAT_LITERAL(Box_getWorldScaleYNode(node));
+
+	Toy_pushLiteralArray(&interpreter->stack, scaleLiteral);
+
+	//cleanup
+	Toy_freeLiteral(nodeLiteral);
+	Toy_freeLiteral(scaleLiteral);
 
 	return 1;
 }
@@ -1452,10 +1804,20 @@ int Box_hookNode(Toy_Interpreter* interpreter, Toy_Literal identifier, Toy_Liter
 		{"setNodePositionY", nativeSetNodePositionY},
 		{"setNodeMotionX", nativeSetNodeMotionX},
 		{"setNodeMotionY", nativeSetNodeMotionY},
+		{"setNodeScaleX", nativeSetNodeScaleX},
+		{"setNodeScaleY", nativeSetNodeScaleY},
 		{"getNodePositionX", nativeGetNodePositionX},
 		{"getNodePositionY", nativeGetNodePositionY},
 		{"getNodeMotionX", nativeGetNodeMotionX},
 		{"getNodeMotionY", nativeGetNodeMotionY},
+		{"getNodeScaleX", nativeGetNodeScaleX},
+		{"getNodeScaleY", nativeGetNodeScaleY},
+		{"getNodeWorldPositionX", nativeGetNodeWorldPositionX},
+		{"getNodeWorldPositionY", nativeGetNodeWorldPositionY},
+		{"getNodeWorldMotionX", nativeGetNodeWorldMotionX},
+		{"getNodeWorldMotionY", nativeGetNodeWorldMotionY},
+		{"getNodeWorldScaleX", nativeGetNodeWorldScaleX},
+		{"getNodeWorldScaleY", nativeGetNodeWorldScaleY},
 		{"drawNode", nativeDrawNode},
 		{"setNodeText", nativeSetNodeText},
 		{"callNodeFn", nativeCallNodeFn},

@@ -20,6 +20,8 @@ void Box_initNode(Box_Node* node, Toy_Interpreter* interpreter, const unsigned c
 	node->positionY = 0;
 	node->motionX = 0;
 	node->motionY = 0;
+	node->scaleX = 1.0f;
+	node->scaleY = 1.0f;
 
 	Toy_initLiteralDictionary(node->functions);
 
@@ -392,6 +394,14 @@ void Box_setMotionYNode(Box_Node* node, int y) {
 	node->motionY = y;
 }
 
+void Box_setScaleXNode(Box_Node* node, float sx) {
+	node->scaleX = sx;
+}
+
+void Box_setScaleYNode(Box_Node* node, float sy) {
+	node->scaleY = sy;
+}
+
 int Box_getPositionXNode(Box_Node* node) {
 	return node->positionX;
 }
@@ -406,6 +416,68 @@ int Box_getMotionXNode(Box_Node* node) {
 
 int Box_getMotionYNode(Box_Node* node) {
 	return node->motionY;
+}
+
+float Box_getScaleXNode(Box_Node* node) {
+	return node->scaleX;
+}
+
+float Box_getScaleYNode(Box_Node* node) {
+	return node->scaleY;
+}
+
+int Box_getWorldPositionXNode(Box_Node* node) {
+	int result = 0;
+	while(node != NULL) {
+		result += node->positionX;
+		node = node->parent;
+	}
+	return result;
+}
+
+int Box_getWorldPositionYNode(Box_Node* node) {
+	int result = 0;
+	while(node != NULL) {
+		result += node->positionY;
+		node = node->parent;
+	}
+	return result;
+}
+
+int Box_getWorldMotionXNode(Box_Node* node) {
+	int result = 0;
+	while(node != NULL) {
+		result += node->motionX;
+		node = node->parent;
+	}
+	return result;
+}
+
+int Box_getWorldMotionYNode(Box_Node* node) {
+	int result = 0;
+	while(node != NULL) {
+		result += node->motionY;
+		node = node->parent;
+	}
+	return result;
+}
+
+float Box_getWorldScaleXNode(Box_Node* node) {
+	float result = 1;
+	while(node != NULL) {
+		result *= node->scaleX;
+		node = node->parent;
+	}
+	return result;
+}
+
+float Box_getWorldScaleYNode(Box_Node* node) {
+	float result = 1;
+	while(node != NULL) {
+		result *= node->scaleY;
+		node = node->parent;
+	}
+	return result;
 }
 
 void Box_movePositionByMotionNode(Box_Node* node) {

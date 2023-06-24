@@ -38,6 +38,8 @@ typedef struct Box_private_node {
 	int positionY;
 	int motionX;
 	int motionY;
+	float scaleX;
+	float scaleY;
 } Box_Node;
 
 BOX_API void Box_initNode(Box_Node* node, Toy_Interpreter* interpreter, const unsigned char* tb, size_t size); //run bytecode, then grab all top-level function literals
@@ -74,11 +76,22 @@ BOX_API void Box_setPositionXNode(Box_Node* node, int x);
 BOX_API void Box_setPositionYNode(Box_Node* node, int y);
 BOX_API void Box_setMotionXNode(Box_Node* node, int x);
 BOX_API void Box_setMotionYNode(Box_Node* node, int y);
+BOX_API void Box_setScaleXNode(Box_Node* node, float sx);
+BOX_API void Box_setScaleYNode(Box_Node* node, float sy);
 
 BOX_API int Box_getPositionXNode(Box_Node* node);
 BOX_API int Box_getPositionYNode(Box_Node* node);
 BOX_API int Box_getMotionXNode(Box_Node* node);
 BOX_API int Box_getMotionYNode(Box_Node* node);
+BOX_API float Box_getScaleXNode(Box_Node* node);
+BOX_API float Box_getScaleYNode(Box_Node* node);
+
+BOX_API int Box_getWorldPositionXNode(Box_Node* node);
+BOX_API int Box_getWorldPositionYNode(Box_Node* node);
+BOX_API int Box_getWorldMotionXNode(Box_Node* node);
+BOX_API int Box_getWorldMotionYNode(Box_Node* node);
+BOX_API float Box_getWorldScaleXNode(Box_Node* node);
+BOX_API float Box_getWorldScaleYNode(Box_Node* node);
 
 BOX_API void Box_movePositionByMotionNode(Box_Node* node);
 BOX_API void Box_movePositionByMotionRecursiveNode(Box_Node* node);

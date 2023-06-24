@@ -7,8 +7,6 @@
 #include "toy_literal_array.h"
 #include "toy_literal_dictionary.h"
 
-#include <time.h>
-
 //the base engine object, which represents the state of the game
 typedef struct Box_private_engine {
 	//engine stuff
