@@ -33,7 +33,7 @@ toy-static-release:
 
 #distribution
 dist: export CFLAGS+=-O2 -mtune=native -march=native
-dist: library
+dist: library-release
 
 #utils
 $(BOX_OUTDIR):
