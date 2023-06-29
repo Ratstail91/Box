@@ -40,6 +40,9 @@ typedef struct Box_private_node {
 	int motionY;
 	float scaleX;
 	float scaleY;
+
+	//sorting layer
+	int layer;
 } Box_Node;
 
 BOX_API void Box_initNode(Box_Node* node, Toy_Interpreter* interpreter, const unsigned char* tb, size_t size); //run bytecode, then grab all top-level function literals
@@ -72,6 +75,7 @@ BOX_API void Box_setCurrentFrameNode(Box_Node* node, int currentFrame);
 BOX_API int Box_getCurrentFrameNode(Box_Node* node);
 BOX_API void Box_incrementCurrentFrame(Box_Node* node);
 
+//position in the world
 BOX_API void Box_setPositionXNode(Box_Node* node, int x);
 BOX_API void Box_setPositionYNode(Box_Node* node, int y);
 BOX_API void Box_setMotionXNode(Box_Node* node, int x);
@@ -95,6 +99,10 @@ BOX_API float Box_getWorldScaleYNode(Box_Node* node);
 
 BOX_API void Box_movePositionByMotionNode(Box_Node* node);
 BOX_API void Box_movePositionByMotionRecursiveNode(Box_Node* node);
+
+//sorting layer
+BOX_API void Box_setLayerNode(Box_Node* node, int layer);
+BOX_API int Box_getLayerNode(Box_Node* node);
 
 //utilities
 BOX_API void Box_setTextNode(Box_Node* node, TTF_Font* font, const char* text, SDL_Color color);

@@ -22,6 +22,7 @@ void Box_initNode(Box_Node* node, Toy_Interpreter* interpreter, const unsigned c
 	node->motionY = 0;
 	node->scaleX = 1.0f;
 	node->scaleY = 1.0f;
+	node->layer = 0;
 
 	Toy_initLiteralDictionary(node->functions);
 
@@ -144,6 +145,12 @@ static void recursiveLiteralQuicksortUtil(Toy_Interpreter* interpreter, Box_Node
 			return;
 		}
 
+		//check for sorting layers (lower layers MUST come first)
+		if (ptr[checker]->layer < ptr[count - 1]->layer) {
+			swapUtil(&ptr[runner++], &ptr[checker]);
+			continue;
+		}
+
 		Toy_LiteralArray arguments;
 		Toy_LiteralArray returns;
 
@@ -181,6 +188,12 @@ BOX_API void Box_sortChildrenNode(Box_Node* node, Toy_Interpreter* interpreter, 
 	for (int checker = 0; checker < node->count - 1 && sorted; checker++) {
 		//NULL (tombstone) is always considered unsorted
 		if (node->children[checker] == NULL || node->children[checker + 1] == NULL) {
+			sorted = false;
+			break;
+		}
+
+		//check for sorting layers (lower layers MUST come first)
+		if (node->children[checker]->layer > node->children[checker + 1]->layer) {
 			sorted = false;
 			break;
 		}
@@ -478,6 +491,14 @@ float Box_getWorldScaleYNode(Box_Node* node) {
 		node = node->parent;
 	}
 	return result;
+}
+
+void Box_setLayerNode(Box_Node* node, int layer) {
+	node->layer = layer;
+}
+
+int Box_getLayerNode(Box_Node* node) {
+	return node->layer;
 }
 
 void Box_movePositionByMotionNode(Box_Node* node) {

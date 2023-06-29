@@ -214,11 +214,11 @@ static inline void execEvents() {
 			//window events are handled internally
 			case SDL_WINDOWEVENT: {
 				switch(event.window.event) {
-					case SDL_WINDOWEVENT_RESIZED:
+					case SDL_WINDOWEVENT_SIZE_CHANGED:
 						//TODO: toy onWindowResized, setLogicalWindowSize, getLogicalWindowSize
-						//engine.screenWidth = event.window.data1;
-						//engine.screenHeight = event.window.data2;
-						//SDL_RenderSetLogicalSize(engine.renderer, engine.screenWidth, engine.screenHeight);
+						// engine.screenWidth = event.window.data1;
+						// engine.screenHeight = event.window.data2;
+						// SDL_RenderSetLogicalSize(engine.renderer, engine.screenWidth, engine.screenHeight);
 					break;
 				}
 			}
@@ -489,7 +489,7 @@ void Box_execEngine() {
 
 		//render the world
 		Dbg_startTimer(&dbgTimer, "clear screen");
-		SDL_SetRenderDrawColor(engine.renderer, 128, 128, 128, 255); //NOTE: This line can be disabled later
+		SDL_SetRenderDrawColor(engine.renderer, 0, 0, 0, 255); //NOTE: This line can be disabled later
 		SDL_RenderClear(engine.renderer); //NOTE: This line can be disabled later
 		Dbg_stopTimer(&dbgTimer);
 
@@ -500,6 +500,8 @@ void Box_execEngine() {
 		Dbg_startTimer(&dbgTimer, "render screen");
 		SDL_RenderPresent(engine.renderer);
 		Dbg_stopTimer(&dbgTimer);
+
+		SDL_Delay(10);
 	}
 
 	Dbg_freeTimer(&dbgTimer);

@@ -34,9 +34,6 @@
 #define BOX_API __declspec(dllexport)
 #endif
 
-//TODO: figure out the sleep issue
-#define sleep Sleep
-
 #else
 
 #define BOX_API extern

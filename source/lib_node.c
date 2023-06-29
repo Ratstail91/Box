@@ -1484,6 +1484,80 @@ static int nativeGetNodeWorldScaleY(Toy_Interpreter* interpreter, Toy_LiteralArr
 	return 1;
 }
 
+static int nativeSetNodeLayer(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
+	if (arguments->count != 2) {
+		interpreter->errorOutput("Incorrect number of arguments passed to setNodeLayer\n");
+		return -1;
+	}
+
+	//extract the arguments
+	Toy_Literal layerLiteral = Toy_popLiteralArray(arguments);
+	Toy_Literal nodeLiteral = Toy_popLiteralArray(arguments);
+
+	Toy_Literal nodeIdn = nodeLiteral;
+	if (TOY_IS_IDENTIFIER(nodeLiteral) && Toy_parseIdentifierToValue(interpreter, &nodeLiteral)) {
+		Toy_freeLiteral(nodeIdn);
+	}
+
+	Toy_Literal layerLiteralIdn = layerLiteral;
+	if (TOY_IS_IDENTIFIER(layerLiteral) && Toy_parseIdentifierToValue(interpreter, &layerLiteral)) {
+		Toy_freeLiteral(layerLiteralIdn);
+	}
+
+	//check argument types
+	if (!TOY_IS_OPAQUE(nodeLiteral) || !TOY_IS_INTEGER(layerLiteral) || TOY_GET_OPAQUE_TAG(nodeLiteral) != OPAQUE_TAG_NODE) {
+		interpreter->errorOutput("Incorrect argument type passed to setNodeLayer\n");
+		Toy_freeLiteral(nodeLiteral);
+		Toy_freeLiteral(layerLiteral);
+		return -1;
+	}
+
+	//actually set
+	Box_Node* node = (Box_Node*)TOY_AS_OPAQUE(nodeLiteral);
+
+	Box_setLayerNode(node, TOY_AS_INTEGER(layerLiteral));
+
+	//cleanup
+	Toy_freeLiteral(nodeLiteral);
+	Toy_freeLiteral(layerLiteral);
+
+	return 0;
+}
+
+static int nativeGetNodeLayer(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
+	if (arguments->count != 1) {
+		interpreter->errorOutput("Incorrect number of arguments passed to getNodeLayer\n");
+		return -1;
+	}
+
+	//extract the arguments
+	Toy_Literal nodeLiteral = Toy_popLiteralArray(arguments);
+
+	Toy_Literal nodeIdn = nodeLiteral;
+	if (TOY_IS_IDENTIFIER(nodeLiteral) && Toy_parseIdentifierToValue(interpreter, &nodeLiteral)) {
+		Toy_freeLiteral(nodeIdn);
+	}
+
+	//check argument types
+	if (!TOY_IS_OPAQUE(nodeLiteral) || TOY_GET_OPAQUE_TAG(nodeLiteral) != OPAQUE_TAG_NODE) {
+		interpreter->errorOutput("Incorrect argument type passed to getNodeLayer\n");
+		Toy_freeLiteral(nodeLiteral);
+		return -1;
+	}
+
+	//actually get
+	Box_Node* node = (Box_Node*)TOY_AS_OPAQUE(nodeLiteral);
+	Toy_Literal layerLiteral = TOY_TO_INTEGER_LITERAL(Box_getLayerNode(node));
+
+	Toy_pushLiteralArray(&interpreter->stack, layerLiteral);
+
+	//cleanup
+	Toy_freeLiteral(nodeLiteral);
+	Toy_freeLiteral(layerLiteral);
+
+	return 1;
+}
+
 static int nativeDrawNode(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
 	if (arguments->count != 3 && arguments->count != 5) {
 		interpreter->errorOutput("Incorrect number of arguments passed to drawNode\n");
@@ -1818,6 +1892,8 @@ int Box_hookNode(Toy_Interpreter* interpreter, Toy_Literal identifier, Toy_Liter
 		{"getNodeWorldMotionY", nativeGetNodeWorldMotionY},
 		{"getNodeWorldScaleX", nativeGetNodeWorldScaleX},
 		{"getNodeWorldScaleY", nativeGetNodeWorldScaleY},
+		{"setNodeLayer", nativeSetNodeLayer},
+		{"getNodeLayer", nativeGetNodeLayer},
 		{"drawNode", nativeDrawNode},
 		{"setNodeText", nativeSetNodeText},
 		{"callNodeFn", nativeCallNodeFn},
