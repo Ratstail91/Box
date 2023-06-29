@@ -441,6 +441,25 @@ static inline void execStep() {
 	}
 }
 
+static inline void execUpdate(int deltaTime) {
+	if (engine.rootNode != NULL) {
+		//create the args
+		Toy_Literal deltaLiteral = TOY_TO_INTEGER_LITERAL(deltaTime);
+
+		Toy_LiteralArray args;
+		Toy_initLiteralArray(&args);
+		Toy_pushLiteralArray(&args, deltaLiteral);
+
+		Toy_freeLiteral(deltaLiteral);
+
+		//updates
+		Box_callRecursiveNode(engine.rootNode, &engine.interpreter, "onUpdate", &args);
+
+		//free
+		Toy_freeLiteralArray(&args);
+	}
+}
+
 //the heart of the engine
 void Box_execEngine() {
 	if (!engine.running) {
@@ -450,7 +469,8 @@ void Box_execEngine() {
 	//set up time
 	engine.realTime = SDL_GetTicks();
 	engine.simTime = engine.realTime;
-	const int delta = 1000 / 60;
+	engine.deltaTime = 0;
+	const int fixedStep = 1000 / 60;
 
 	Dbg_Timer dbgTimer;
 	Dbg_FPSCounter fps;
@@ -469,21 +489,30 @@ void Box_execEngine() {
 		execLoadRootNode();
 		Dbg_stopTimer(&dbgTimer);
 
+		//calc the time values
+		const int lastRealTime = engine.realTime;
+		engine.realTime = SDL_GetTicks();
+		engine.deltaTime = engine.realTime - lastRealTime;
+
+		//execute events
 		Dbg_startTimer(&dbgTimer, "execEvents()");
 		execEvents();
 		Dbg_stopTimer(&dbgTimer);
 
-		//calc the time passed
-		engine.realTime = SDL_GetTicks();
+		//execute update
+		Dbg_startTimer(&dbgTimer, "execUpdate() (variable-delta)");
+		execUpdate(engine.deltaTime);
+		Dbg_stopTimer(&dbgTimer);
 
-		Dbg_startTimer(&dbgTimer, "execStep() (variable)");
+		//execute fixed steps
+		Dbg_startTimer(&dbgTimer, "execStep() (fixed-delta)");
 		//while not enough time has passed
 		while(engine.simTime < engine.realTime) {
 			//simulate the world
 			execStep();
 
 			//calc the time simulation
-			engine.simTime += delta;
+			engine.simTime += fixedStep;
 		}
 		Dbg_stopTimer(&dbgTimer);
 

@@ -15,7 +15,8 @@ typedef struct Box_private_engine {
 	Box_Node* rootNode;
 	Toy_Literal nextRootNodeFilename;
 	int simTime;
-	int realTime;
+	int realTime; //also used as deltaTick
+	int deltaTime;
 	bool running;
 
 	//Toy stuff
