@@ -63,6 +63,7 @@ BOX_API void Box_callRecursiveNode(Box_Node* node, Toy_Interpreter* interpreter,
 
 BOX_API int Box_getChildCountNode(Box_Node* node);
 
+BOX_API int Box_createTextureNode(Box_Node* node, int width, int height);
 BOX_API int Box_loadTextureNode(Box_Node* node, const char* fname);
 BOX_API void Box_freeTextureNode(Box_Node* node);
 

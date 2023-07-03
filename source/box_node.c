@@ -329,6 +329,23 @@ int Box_getChildCountNode(Box_Node* node) {
 	return node->childCount;
 }
 
+BOX_API int Box_createTextureNode(Box_Node* node, int width, int height) {
+	node->texture = SDL_CreateTexture(engine.renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height);
+
+	if (node->texture == NULL) {
+		return -1;
+	}
+
+	//get the rect
+	int w, h;
+	SDL_QueryTexture(node->texture, NULL, NULL, &w, &h);
+	SDL_Rect r = { 0, 0, w, h };
+	Box_setRectNode(node, r);
+	Box_setFramesNode(node, 1); //default
+
+	return 0;
+}
+
 int Box_loadTextureNode(Box_Node* node, const char* fname) {
 	SDL_Surface* surface = IMG_Load(fname);
 

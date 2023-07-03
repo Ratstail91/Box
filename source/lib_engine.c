@@ -155,6 +155,41 @@ static int nativeGetRootNode(Toy_Interpreter* interpreter, Toy_LiteralArray* arg
 	return 1;
 }
 
+//utility functions
+static int nativeSetRenderTarget(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
+	if (arguments->count != 1) {
+		interpreter->errorOutput("Incorrect number of arguments passed to setRenderTarget\n");
+		return -1;
+	}
+
+	//get the target node OR null value
+	Toy_Literal nodeLiteral = Toy_popLiteralArray(arguments);
+
+	Toy_Literal nodeLiteralIdn = nodeLiteral;
+	if (TOY_IS_IDENTIFIER(nodeLiteral) && Toy_parseIdentifierToValue(interpreter, &nodeLiteral)) {
+		Toy_freeLiteral(nodeLiteralIdn);
+	}
+
+	//null value is allowed - indicates setting the screen as the render target
+	if (!TOY_IS_NULL(nodeLiteral) && (!TOY_IS_OPAQUE(nodeLiteral) || TOY_GET_OPAQUE_TAG(nodeLiteral) != OPAQUE_TAG_NODE) ) {
+		interpreter->errorOutput("Incorrect argument type passed to setRenderTarget\n");
+		Toy_freeLiteral(nodeLiteral);
+	}
+
+	if (TOY_IS_NULL(nodeLiteral)) {
+		SDL_SetRenderTarget(engine.renderer, NULL);
+	}
+
+	else {
+		SDL_SetRenderTarget(engine.renderer, ((Box_Node*)TOY_AS_OPAQUE(nodeLiteral))->texture);
+	}
+
+	Toy_freeLiteral(nodeLiteral);
+
+	return 0;
+}
+
+
 //call the hook
 typedef struct Natives {
 	char* name;
@@ -167,6 +202,7 @@ int Box_hookEngine(Toy_Interpreter* interpreter, Toy_Literal identifier, Toy_Lit
 		{"initWindow", nativeInitWindow},
 		{"loadRootNode", nativeLoadRootNode},
 		{"getRootNode", nativeGetRootNode},
+		{"setRenderTarget", nativeSetRenderTarget},
 		{NULL, NULL}
 	};
 

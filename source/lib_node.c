@@ -365,6 +365,64 @@ static int nativeGetChildNodeCount(Toy_Interpreter* interpreter, Toy_LiteralArra
 	return 0;
 }
 
+static int nativeCreateNodeTexture(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
+	if (arguments->count != 3) {
+		interpreter->errorOutput("Incorrect number of arguments passed to createNodeTexture\n");
+		return -1;
+	}
+
+	//extract the arguments
+	Toy_Literal heightLiteral = Toy_popLiteralArray(arguments);
+	Toy_Literal widthLiteral = Toy_popLiteralArray(arguments);
+	Toy_Literal nodeLiteral = Toy_popLiteralArray(arguments);
+
+	Toy_Literal nodeIdn = nodeLiteral;
+	if (TOY_IS_IDENTIFIER(nodeLiteral) && Toy_parseIdentifierToValue(interpreter, &nodeLiteral)) {
+		Toy_freeLiteral(nodeIdn);
+	}
+
+	Toy_Literal widthIdn = widthLiteral;
+	if (TOY_IS_IDENTIFIER(widthLiteral) && Toy_parseIdentifierToValue(interpreter, &widthLiteral)) {
+		Toy_freeLiteral(widthIdn);
+	}
+
+	Toy_Literal heightIdn = heightLiteral;
+	if (TOY_IS_IDENTIFIER(heightLiteral) && Toy_parseIdentifierToValue(interpreter, &heightLiteral)) {
+		Toy_freeLiteral(heightIdn);
+	}
+
+	//check argument types
+	if (!TOY_IS_INTEGER(widthLiteral) || !TOY_IS_INTEGER(heightLiteral) || !TOY_IS_OPAQUE(nodeLiteral) || TOY_GET_OPAQUE_TAG(nodeLiteral) != OPAQUE_TAG_NODE) {
+		interpreter->errorOutput("Incorrect argument type passed to createNodeTexture\n");
+		Toy_freeLiteral(nodeLiteral);
+		Toy_freeLiteral(widthLiteral);
+		Toy_freeLiteral(heightLiteral);
+		return -1;
+	}
+
+	//actually load
+	Box_Node* node = (Box_Node*)TOY_AS_OPAQUE(nodeLiteral);
+
+	if (node->texture != NULL) {
+		Box_freeTextureNode(node);
+	}
+
+	if (Box_createTextureNode(node, TOY_AS_INTEGER(widthLiteral), TOY_AS_INTEGER(heightLiteral)) != 0) {
+		interpreter->errorOutput("Failed to create the texture in createNodeTexture\n");
+		Toy_freeLiteral(nodeLiteral);
+		Toy_freeLiteral(widthLiteral);
+		Toy_freeLiteral(heightLiteral);
+		return -1;
+	}
+
+	//cleanup
+	Toy_freeLiteral(nodeLiteral);
+	Toy_freeLiteral(widthLiteral);
+	Toy_freeLiteral(heightLiteral);
+
+	return 0;
+}
+
 static int nativeLoadNodeTexture(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
 	if (arguments->count != 2) {
 		interpreter->errorOutput("Incorrect number of arguments passed to loadNodeTexture\n");
@@ -411,7 +469,7 @@ static int nativeLoadNodeTexture(Toy_Interpreter* interpreter, Toy_LiteralArray*
 	}
 
 	if (Box_loadTextureNode(node, Toy_toCString(TOY_AS_STRING(filePathLiteral))) != 0) {
-		interpreter->errorOutput("Failed to load the texture into the Box_Node\n");
+		interpreter->errorOutput("Failed to load the texture in loadNodeTexture\n");
 		Toy_freeLiteral(filePathLiteral);
 		Toy_freeLiteral(nodeLiteral);
 		return -1;
@@ -1862,6 +1920,7 @@ int Box_hookNode(Toy_Interpreter* interpreter, Toy_Literal identifier, Toy_Liter
 		{"sortChildrenNode", nativeSortChildrenNode},
 		{"getParentNode", nativeGetParentNode},
 		{"getChildNodeCount", nativeGetChildNodeCount},
+		{"createNodeTexture", nativeCreateNodeTexture}, //NOTE: these textures are possible render targets
 		{"loadNodeTexture", nativeLoadNodeTexture},
 		{"freeNodeTexture", nativeFreeNodeTexture},
 		{"setNodeRect", nativeSetNodeRect},
