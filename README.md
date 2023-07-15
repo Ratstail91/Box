@@ -27,7 +27,7 @@ Make sure the program can see the `assets` folder (symbolic links can help), and
 
 # License
 
-This source code is covered by the zlib license (see [LICENSE.md](LICENSE.md)).
+The source code for this project, not including the contents of Toy, is covered by the zlib license (see [LICENSE.md](LICENSE.md)).
 
 # Patrons via Patreon
 

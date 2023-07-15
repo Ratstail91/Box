@@ -1,5 +1,7 @@
 #include "dbg_profiler.h"
 
+#ifndef DBG_DISABLE
+
 #include "toy_memory.h"
 
 #include <stdio.h>
@@ -78,7 +80,7 @@ void Dbg_startTimer(Dbg_Timer* timer, const char* name) {
 
 void Dbg_stopTimer(Dbg_Timer* timer) {
 	double duration = (clock() - timer->start) / (double) CLOCKS_PER_SEC * 1000;
-	timer->logPos += sprintf(&(timer->log[timer->logPos]), "%.3fms %s\n", duration, timer->name);
+	timer->logPos += snprintf(&(timer->log[timer->logPos]), 2048 - timer->logPos, "%.3fms %s\n", duration, timer->name);
 }
 
 void Dbg_printTimerLog(Dbg_Timer* timer) {
@@ -100,7 +102,7 @@ void Dbg_tickFPSCounter(Dbg_FPSCounter* counter) {
 	counter->count++;
 
 	if (clock() - counter->start > CLOCKS_PER_SEC) {
-		sprintf(counter->log, "%d FPS", counter->count);
+		snprintf(counter->log, 256, "%d FPS", counter->count);
 		counter->start = clock();
 		counter->count = 0;
 	}
@@ -113,3 +115,5 @@ void Dbg_printFPSCounter(Dbg_FPSCounter* counter) {
 void Dbg_freeFPSCounter(Dbg_FPSCounter* counter) {
 	//
 }
+
+#endif

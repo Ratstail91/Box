@@ -489,22 +489,22 @@ void Box_execEngine() {
 	engine.deltaTime = 0;
 	const int fixedStep = 1000 / 60;
 
-	// Dbg_Timer dbgTimer;
-	// Dbg_FPSCounter fps;
+	Dbg_Timer dbgTimer;
+	Dbg_FPSCounter fps;
 
-	// Dbg_initTimer(&dbgTimer);
-	// Dbg_initFPSCounter(&fps);
+	Dbg_initTimer(&dbgTimer);
+	Dbg_initFPSCounter(&fps);
 
 	while (engine.running) {
-		// Dbg_tickFPSCounter(&fps);
+		Dbg_tickFPSCounter(&fps);
 
-		// Dbg_clearConsole();
-		// Dbg_printTimerLog(&dbgTimer);
-		// Dbg_printFPSCounter(&fps);
+		Dbg_clearConsole();
+		Dbg_printTimerLog(&dbgTimer);
+		Dbg_printFPSCounter(&fps);
 
-		// Dbg_startTimer(&dbgTimer, "execLoadRootNode()");
+		Dbg_startTimer(&dbgTimer, "execLoadRootNode()");
 		execLoadRootNode();
-		// Dbg_stopTimer(&dbgTimer);
+		Dbg_stopTimer(&dbgTimer);
 
 		//calc the time values
 		const int lastRealTime = engine.realTime;
@@ -512,17 +512,17 @@ void Box_execEngine() {
 		engine.deltaTime = engine.realTime - lastRealTime;
 
 		//execute events
-		// Dbg_startTimer(&dbgTimer, "execEvents()");
+		Dbg_startTimer(&dbgTimer, "execEvents()");
 		execEvents();
-		// Dbg_stopTimer(&dbgTimer);
+		Dbg_stopTimer(&dbgTimer);
 
 		//execute update
-		// Dbg_startTimer(&dbgTimer, "execUpdate() (variable-delta)");
+		Dbg_startTimer(&dbgTimer, "execUpdate() (variable-delta)");
 		execUpdate(engine.deltaTime);
-		// Dbg_stopTimer(&dbgTimer);
+		Dbg_stopTimer(&dbgTimer);
 
 		//execute fixed steps
-		// Dbg_startTimer(&dbgTimer, "execStep() (fixed-delta)");
+		Dbg_startTimer(&dbgTimer, "execStep() (fixed-delta)");
 		//while not enough time has passed
 		while(engine.simTime < engine.realTime) {
 			//simulate the world
@@ -531,25 +531,25 @@ void Box_execEngine() {
 			//calc the time simulation
 			engine.simTime += fixedStep;
 		}
-		// Dbg_stopTimer(&dbgTimer);
+		Dbg_stopTimer(&dbgTimer);
 
 		//render the world
-		// Dbg_startTimer(&dbgTimer, "clear screen");
+		Dbg_startTimer(&dbgTimer, "clear screen");
 		SDL_SetRenderDrawColor(engine.renderer, 0, 0, 0, 255); //NOTE: This line can be disabled later
 		SDL_RenderClear(engine.renderer); //NOTE: This line can be disabled later
-		// Dbg_stopTimer(&dbgTimer);
+		Dbg_stopTimer(&dbgTimer);
 
-		// Dbg_startTimer(&dbgTimer, "onDraw() calls");
+		Dbg_startTimer(&dbgTimer, "onDraw() calls");
 		Box_callRecursiveNode(engine.rootNode, &engine.interpreter, "onDraw", NULL);
-		// Dbg_stopTimer(&dbgTimer);
+		Dbg_stopTimer(&dbgTimer);
 
-		// Dbg_startTimer(&dbgTimer, "render screen");
+		Dbg_startTimer(&dbgTimer, "render screen");
 		SDL_RenderPresent(engine.renderer);
-		// Dbg_stopTimer(&dbgTimer);
+		Dbg_stopTimer(&dbgTimer);
 
 		SDL_Delay(10);
 	}
 
-	// Dbg_freeTimer(&dbgTimer);
-	// Dbg_freeFPSCounter(&fps);
+	Dbg_freeTimer(&dbgTimer);
+	Dbg_freeFPSCounter(&fps);
 }
