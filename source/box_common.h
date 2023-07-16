@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 #define BOX_VERSION_MAJOR 0
-#define BOX_VERSION_MINOR 1
+#define BOX_VERSION_MINOR 2
 #define BOX_VERSION_PATCH 0
 #define BOX_VERSION_BUILD __DATE__ " " __TIME__
 
@@ -14,15 +14,16 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_ttf.h>
 
-#include <unistd.h>
 #define BOX_API extern
 
 #elif defined(_MSC_VER)
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_mixer.h>
 #include <SDL_ttf.h>
 
 #include <windows.h>

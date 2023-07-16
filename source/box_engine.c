@@ -42,9 +42,10 @@ void Box_initEngine(const char* initScript) {
 	engine.running = false;
 	engine.window = NULL;
 	engine.renderer = NULL;
+	engine.music = NULL;
 
 	//init SDL
-	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
 		fatalError("Failed to initialize SDL2");
 	}
 
@@ -54,8 +55,13 @@ void Box_initEngine(const char* initScript) {
 		fatalError("Failed to initialize SDL2_image");
 	}
 
+	//init SDL_mixer
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) != 0) {
+		fatalError("Failed to initialize SDL2_mixer");
+	}
+
 	//init SDL_ttf
-	if (TTF_Init() == -1) {
+	if (TTF_Init() != 0) {
 		fatalError("Failed to initialize SDL2_ttf");
 	}
 
@@ -143,6 +149,17 @@ void Box_freeEngine() {
 	//free events
 	Toy_freeLiteralDictionary(&engine.symKeyDownEvents);
 	Toy_freeLiteralDictionary(&engine.symKeyUpEvents);
+
+	//free the music
+	if (engine.music != NULL) {
+		Mix_HaltMusic();
+		Mix_FreeMusic(engine.music);
+	}
+
+	//free SDL libs
+	TTF_Quit();
+	IMG_Quit();
+	Mix_Quit();
 
 	//free SDL
 	SDL_DestroyRenderer(engine.renderer);

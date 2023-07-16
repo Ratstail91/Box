@@ -28,6 +28,9 @@ typedef struct Box_private_engine {
 	int screenWidth;
 	int screenHeight;
 
+	//SDL_mixer stuff
+	Mix_Music* music;
+
 	//input syms mapped to events
 	Toy_LiteralDictionary symKeyDownEvents; //keysym -> event names
 	Toy_LiteralDictionary symKeyUpEvents; //keysym -> event names
