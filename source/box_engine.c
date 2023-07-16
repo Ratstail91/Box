@@ -199,7 +199,7 @@ static inline void execLoadRootNode() {
 	Toy_initLiteralArray(&inner.literalCache);
 	inner.scope = Toy_pushScope(engine.interpreter.scope);
 	inner.bytecode = tb;
-	inner.length = size;
+	inner.length = (int)size;
 	inner.count = 0;
 	inner.codeStart = -1;
 	inner.depth = engine.interpreter.depth + 1;
