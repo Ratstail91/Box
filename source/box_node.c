@@ -146,8 +146,8 @@ static void recursiveLiteralQuicksortUtil(Toy_Interpreter* interpreter, Box_Node
 		}
 
 		//check for sorting layers (lower layers MUST come first)
-		if (ptr[checker]->layer < ptr[count - 1]->layer) {
-			swapUtil(&ptr[runner++], &ptr[checker]);
+		if (ptr[checker]->layer < ptr[runner]->layer) {
+			swapUtil(&ptr[checker], &ptr[runner++]);
 			continue;
 		}
 

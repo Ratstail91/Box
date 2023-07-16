@@ -511,6 +511,10 @@ void Box_execEngine() {
 		engine.realTime = SDL_GetTicks();
 		engine.deltaTime = engine.realTime - lastRealTime;
 
+		Dbg_startTimer(&dbgTimer, "onFrameStart()");
+		Box_callRecursiveNode(engine.rootNode, &engine.interpreter, "onFrameStart", NULL);
+		Dbg_stopTimer(&dbgTimer);
+
 		//execute events
 		Dbg_startTimer(&dbgTimer, "execEvents()");
 		execEvents();
@@ -534,17 +538,21 @@ void Box_execEngine() {
 		Dbg_stopTimer(&dbgTimer);
 
 		//render the world
-		Dbg_startTimer(&dbgTimer, "clear screen");
+		Dbg_startTimer(&dbgTimer, "screen clear");
 		SDL_SetRenderDrawColor(engine.renderer, 0, 0, 0, 255); //NOTE: This line can be disabled later
 		SDL_RenderClear(engine.renderer); //NOTE: This line can be disabled later
 		Dbg_stopTimer(&dbgTimer);
 
-		Dbg_startTimer(&dbgTimer, "onDraw() calls");
+		Dbg_startTimer(&dbgTimer, "onDraw()");
 		Box_callRecursiveNode(engine.rootNode, &engine.interpreter, "onDraw", NULL);
 		Dbg_stopTimer(&dbgTimer);
 
-		Dbg_startTimer(&dbgTimer, "render screen");
+		Dbg_startTimer(&dbgTimer, "screen render");
 		SDL_RenderPresent(engine.renderer);
+		Dbg_stopTimer(&dbgTimer);
+
+		Dbg_startTimer(&dbgTimer, "onFrameEnd()");
+		Box_callRecursiveNode(engine.rootNode, &engine.interpreter, "onFrameEnd", NULL);
 		Dbg_stopTimer(&dbgTimer);
 
 		SDL_Delay(10);

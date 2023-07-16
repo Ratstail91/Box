@@ -229,6 +229,11 @@ static int nativeFreeChildNode(Toy_Interpreter* interpreter, Toy_LiteralArray* a
 		Toy_freeLiteral(nodeLiteralIdn);
 	}
 
+	Toy_Literal indexLiteralIdn = nodeLiteral; //annoying
+	if (TOY_IS_IDENTIFIER(indexLiteral) && Toy_parseIdentifierToValue(interpreter, &indexLiteral)) {
+		Toy_freeLiteral(indexLiteralIdn);
+	}
+
 	//check argument types
 	if (!TOY_IS_OPAQUE(nodeLiteral) || !TOY_IS_INTEGER(indexLiteral) || TOY_GET_OPAQUE_TAG(nodeLiteral) != OPAQUE_TAG_NODE) {
 		interpreter->errorOutput("Incorrect argument type passed to freeChildNode\n");
@@ -248,7 +253,7 @@ static int nativeFreeChildNode(Toy_Interpreter* interpreter, Toy_LiteralArray* a
 	}
 
 	//TODO: differentiate between onFree() and freeing memory
-	Box_callRecursiveNode(node, interpreter, "onFree", NULL);
+	Box_callRecursiveNode(node->children[idx], interpreter, "onFree", NULL);
 	Box_freeChildNode(node, idx);
 
 	//cleanup
