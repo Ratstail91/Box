@@ -148,7 +148,7 @@ static int nativeGetRootNode(Toy_Interpreter* interpreter, Toy_LiteralArray* arg
 		return -1;
 	}
 
-	Toy_Literal resultLiteral = TOY_TO_OPAQUE_LITERAL(engine.rootNode, OPAQUE_TAG_NODE);
+	Toy_Literal resultLiteral = TOY_TO_OPAQUE_LITERAL(engine.rootNode, BOX_OPAQUE_TAG_NODE);
 
 	Toy_pushLiteralArray(&interpreter->stack, resultLiteral);
 
@@ -171,7 +171,7 @@ static int nativeSetRenderTarget(Toy_Interpreter* interpreter, Toy_LiteralArray*
 	}
 
 	//null value is allowed - indicates setting the screen as the render target
-	if (!TOY_IS_NULL(nodeLiteral) && (!TOY_IS_OPAQUE(nodeLiteral) || TOY_GET_OPAQUE_TAG(nodeLiteral) != OPAQUE_TAG_NODE) ) {
+	if (!TOY_IS_NULL(nodeLiteral) && (!TOY_IS_OPAQUE(nodeLiteral) || TOY_GET_OPAQUE_TAG(nodeLiteral) != BOX_OPAQUE_TAG_NODE) ) {
 		interpreter->errorOutput("Incorrect argument type passed to setRenderTarget\n");
 		Toy_freeLiteral(nodeLiteral);
 	}

@@ -28,7 +28,7 @@ static int nativeMapInputEventToKey(Toy_Interpreter* interpreter, Toy_LiteralArr
 	}
 
 	if (!TOY_IS_STRING(symLiteral) || !TOY_IS_STRING(evtLiteral)) {
-		interpreter->errorOutput("Incorrect type of arguments passed to mapInputEventToKey\n");
+		interpreter->errorOutput("Incorrect argument types passed to mapInputEventToKey\n");
 		return -1;
 	}
 

@@ -8,6 +8,7 @@
 #include "lib_node.h"
 #include "lib_input.h"
 #include "lib_music.h"
+#include "lib_sound.h"
 
 #include "repl_tools.h"
 
@@ -57,7 +58,7 @@ void Box_initEngine(const char* initScript) {
 	}
 
 	//init SDL_mixer
-	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) != 0) {
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) != 0) {
 		fatalError("Failed to initialize SDL2_mixer");
 	}
 
@@ -80,6 +81,7 @@ void Box_initEngine(const char* initScript) {
 	Toy_injectNativeHook(&engine.interpreter, "node", Box_hookNode);
 	Toy_injectNativeHook(&engine.interpreter, "input", Box_hookInput);
 	Toy_injectNativeHook(&engine.interpreter, "music", Box_hookMusic);
+	Toy_injectNativeHook(&engine.interpreter, "sound", Box_hookSound);
 
 	//load the initScript with the drive path system
 	Toy_Literal scriptLiteral = TOY_TO_STRING_LITERAL(Toy_createRefString(initScript));

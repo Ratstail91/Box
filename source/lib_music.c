@@ -22,7 +22,7 @@ static int nativeLoadMusic(Toy_Interpreter* interpreter, Toy_LiteralArray* argum
 	}
 
 	if (!TOY_IS_STRING(fileLiteral)) {
-		interpreter->errorOutput("Incorrect type of arguments passed to loadMusic\n");
+		interpreter->errorOutput("Incorrect argument type passed to loadMusic\n");
 		return -1;
 	}
 

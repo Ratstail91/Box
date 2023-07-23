@@ -157,8 +157,8 @@ static void recursiveLiteralQuicksortUtil(Toy_Interpreter* interpreter, Box_Node
 		Toy_initLiteralArray(&arguments);
 		Toy_initLiteralArray(&returns);
 
-		Toy_pushLiteralArray(&arguments, TOY_TO_OPAQUE_LITERAL(ptr[checker], OPAQUE_TAG_NODE));
-		Toy_pushLiteralArray(&arguments, TOY_TO_OPAQUE_LITERAL(ptr[count - 1], OPAQUE_TAG_NODE));
+		Toy_pushLiteralArray(&arguments, TOY_TO_OPAQUE_LITERAL(ptr[checker], BOX_OPAQUE_TAG_NODE));
+		Toy_pushLiteralArray(&arguments, TOY_TO_OPAQUE_LITERAL(ptr[count - 1], BOX_OPAQUE_TAG_NODE));
 
 		Toy_callLiteralFn(interpreter, fnCompare, &arguments, &returns);
 
@@ -204,8 +204,8 @@ BOX_API void Box_sortChildrenNode(Box_Node* node, Toy_Interpreter* interpreter, 
 		Toy_initLiteralArray(&arguments);
 		Toy_initLiteralArray(&returns);
 
-		Toy_pushLiteralArray(&arguments, TOY_TO_OPAQUE_LITERAL(node->children[checker], OPAQUE_TAG_NODE));
-		Toy_pushLiteralArray(&arguments, TOY_TO_OPAQUE_LITERAL(node->children[checker + 1], OPAQUE_TAG_NODE));
+		Toy_pushLiteralArray(&arguments, TOY_TO_OPAQUE_LITERAL(node->children[checker], BOX_OPAQUE_TAG_NODE));
+		Toy_pushLiteralArray(&arguments, TOY_TO_OPAQUE_LITERAL(node->children[checker + 1], BOX_OPAQUE_TAG_NODE));
 
 		Toy_callLiteralFn(interpreter, fnCompare, &arguments, &returns);
 
@@ -238,7 +238,7 @@ Toy_Literal Box_callNodeLiteral(Box_Node* node, Toy_Interpreter* interpreter, To
 	//if this fn exists
 	if (Toy_existsLiteralDictionary(node->functions, key)) {
 		Toy_Literal fn = Toy_getLiteralDictionary(node->functions, key);
-		Toy_Literal n = TOY_TO_OPAQUE_LITERAL(node, OPAQUE_TAG_NODE);
+		Toy_Literal n = TOY_TO_OPAQUE_LITERAL(node, BOX_OPAQUE_TAG_NODE);
 
 		Toy_LiteralArray arguments;
 		Toy_LiteralArray returns;
@@ -283,7 +283,7 @@ void Box_callRecursiveNodeLiteral(Box_Node* node, Toy_Interpreter* interpreter, 
 	//if this fn exists
 	if (Toy_existsLiteralDictionary(node->functions, key)) {
 		Toy_Literal fn = Toy_getLiteralDictionary(node->functions, key);
-		Toy_Literal n = TOY_TO_OPAQUE_LITERAL(node, OPAQUE_TAG_NODE);
+		Toy_Literal n = TOY_TO_OPAQUE_LITERAL(node, BOX_OPAQUE_TAG_NODE);
 
 		Toy_LiteralArray arguments;
 		Toy_LiteralArray returns;

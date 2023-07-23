@@ -5,7 +5,8 @@
 #include "toy_literal_dictionary.h"
 #include "toy_interpreter.h"
 
-#define OPAQUE_TAG_NODE 1001
+//TODO: write down a list of all tag values
+#define BOX_OPAQUE_TAG_NODE 1000
 
 //forward declare
 typedef struct Box_private_node Box_Node;
