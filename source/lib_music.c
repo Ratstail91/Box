@@ -161,6 +161,52 @@ static int nativeCheckMusicPaused(Toy_Interpreter* interpreter, Toy_LiteralArray
 	return 1;
 }
 
+static int nativeGetMusicVolume(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
+	//checks
+	if (arguments->count != 0) {
+		interpreter->errorOutput("Incorrect number of arguments passed to getMusicVolume\n");
+		return -1;
+	}
+
+	//generate the value
+	Toy_Literal resultLiteral = TOY_TO_INTEGER_LITERAL(Mix_VolumeMusic(-1));
+
+	//return the value
+	Toy_pushLiteralArray(&interpreter->stack, resultLiteral);
+
+	return 1;
+}
+
+static int nativeSetMusicVolume(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
+	//checks
+	if (arguments->count != 1) {
+		interpreter->errorOutput("Incorrect number of arguments passed to setMusicVolume\n");
+		return -1;
+	}
+
+	//get the volume
+	Toy_Literal volumeLiteral = Toy_popLiteralArray(arguments);
+
+	Toy_Literal volumeLiteralIdn = volumeLiteral;
+	if (TOY_IS_IDENTIFIER(volumeLiteral) && Toy_parseIdentifierToValue(interpreter, &volumeLiteral)) {
+		Toy_freeLiteral(volumeLiteralIdn);
+	}
+
+	if (!TOY_IS_INTEGER(volumeLiteral)) {
+		interpreter->errorOutput("Incorrect argument type passed to setMusicVolume\n");
+		Toy_freeLiteral(volumeLiteral);
+		return -1;
+	}
+
+	//set the volume
+	Mix_VolumeMusic(TOY_AS_INTEGER(volumeLiteral));
+
+	//cleanup
+	Toy_freeLiteral(volumeLiteral);
+
+	return 0;
+}
+
 //call the hook
 typedef struct Natives {
 	char* name;
@@ -179,6 +225,9 @@ int Box_hookMusic(Toy_Interpreter* interpreter, Toy_Literal identifier, Toy_Lite
 		{"pauseMusic", nativePauseMusic},
 		{"unpauseMusic", nativeUnpauseMusic},
 		{"checkMusicPaused", nativeCheckMusicPaused},
+
+		{"getMusicVolume", nativeGetMusicVolume},
+		{"setMusicVolume", nativeSetMusicVolume},
 
 		{NULL, NULL}
 	};

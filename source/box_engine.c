@@ -58,7 +58,7 @@ void Box_initEngine(const char* initScript) {
 	}
 
 	//init SDL_mixer
-	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) != 0) {
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2096) != 0) {
 		fatalError("Failed to initialize SDL2_mixer");
 	}
 
