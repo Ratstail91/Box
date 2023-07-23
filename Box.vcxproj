@@ -71,10 +71,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)out\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)out\</OutDir>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)out\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)out\</OutDir>
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -117,15 +119,20 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SDL2.lib;SDL2_image.lib;SDL2_mixer.lib;SDL2_ttf.lib;Toy.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SDL2Dir)\lib\x64;$(SDL2ImageDir)\lib\x64;$(SDL2MixerDir)\lib\x64;$(SDL2TTFDir)\lib\x64;$(SolutionDir)out\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SDL2Dir)\lib\x64;$(SDL2ImageDir)\lib\x64;$(SDL2MixerDir)\lib\x64;$(SDL2TTFDir)\lib\x64;$(SolutionDir)out;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <OutputFile>$(Outdir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>del "$(OutDir)$(ProjectName).exp"
+del "$(OutDir)$(ProjectName).pdb"
+</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>./copy_libs.bat</Command>
     </PreBuildEvent>
+    <Bscmake>
+      <OutputFile>$(Platform)\$(Configuration)\$(TargetName).bsc</OutputFile>
+    </Bscmake>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -144,15 +151,20 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SDL2.lib;SDL2_image.lib;SDL2_mixer.lib;SDL2_ttf.lib;Toy.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SDL2Dir)\lib\x64;$(SDL2ImageDir)\lib\x64;$(SDL2MixerDir)\lib\x64;$(SDL2TTFDir)\lib\x64;$(SolutionDir)out\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SDL2Dir)\lib\x64;$(SDL2ImageDir)\lib\x64;$(SDL2MixerDir)\lib\x64;$(SDL2TTFDir)\lib\x64;$(SolutionDir)out;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <OutputFile>$(Outdir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>del "$(OutDir)$(ProjectName).exp"
+del "$(OutDir)$(ProjectName).pdb"
+</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>./copy_libs.bat</Command>
     </PreBuildEvent>
+    <Bscmake>
+      <OutputFile>$(Platform)\$(Configuration)\$(TargetName).bsc</OutputFile>
+    </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="source\box_common.c" />
@@ -162,9 +174,11 @@
     <ClCompile Include="source\lib_about.c" />
     <ClCompile Include="source\lib_engine.c" />
     <ClCompile Include="source\lib_input.c" />
+    <ClCompile Include="source\lib_music.c" />
     <ClCompile Include="source\lib_node.c" />
     <ClCompile Include="source\lib_random.c" />
     <ClCompile Include="source\lib_runner.c" />
+    <ClCompile Include="source\lib_sound.c" />
     <ClCompile Include="source\lib_standard.c" />
     <ClCompile Include="source\repl_tools.c" />
   </ItemGroup>
@@ -176,9 +190,11 @@
     <ClInclude Include="source\lib_about.h" />
     <ClInclude Include="source\lib_engine.h" />
     <ClInclude Include="source\lib_input.h" />
+    <ClInclude Include="source\lib_music.h" />
     <ClInclude Include="source\lib_node.h" />
     <ClInclude Include="source\lib_random.h" />
     <ClInclude Include="source\lib_runner.h" />
+    <ClInclude Include="source\lib_sound.h" />
     <ClInclude Include="source\lib_standard.h" />
     <ClInclude Include="source\repl_tools.h" />
   </ItemGroup>
