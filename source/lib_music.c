@@ -174,6 +174,8 @@ static int nativeGetMusicVolume(Toy_Interpreter* interpreter, Toy_LiteralArray* 
 	//return the value
 	Toy_pushLiteralArray(&interpreter->stack, resultLiteral);
 
+	Toy_freeLiteral(resultLiteral);
+
 	return 1;
 }
 

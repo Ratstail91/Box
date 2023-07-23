@@ -119,10 +119,81 @@ static int nativePlaySound(Toy_Interpreter* interpreter, Toy_LiteralArray* argum
 	Mix_PlayChannel(-1, sound, 0);
 	//TODO: add repeat argument
 	//TODO: add channel system
-	//TODO: volume controls
 
 	//cleanup
 	Toy_freeLiteral(soundLiteral);
+
+	return 0;
+}
+
+static int nativeGetSoundVolume(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
+	//checks
+	if (arguments->count != 1) {
+		interpreter->errorOutput("Incorrect number of arguments passed to getSoundVolume\n");
+		return -1;
+	}
+
+	//get the sound
+	Toy_Literal soundLiteral = Toy_popLiteralArray(arguments);
+
+	Toy_Literal soundLiteralIdn = soundLiteral;
+	if (TOY_IS_IDENTIFIER(soundLiteral) && Toy_parseIdentifierToValue(interpreter, &soundLiteral)) {
+		Toy_freeLiteral(soundLiteralIdn);
+	}
+
+	if (!TOY_IS_OPAQUE(soundLiteral) || TOY_GET_OPAQUE_TAG(soundLiteral) != TOY_OPAQUE_TAG_SOUND) {
+		interpreter->errorOutput("Incorrect argument type passed to getSoundVolume\n");
+		Toy_freeLiteral(soundLiteral);
+		return -1;
+	}
+
+	//get the volume of the chunk
+	Mix_Chunk* sound = TOY_AS_OPAQUE(soundLiteral);
+	Toy_Literal resultLiteral = TOY_TO_INTEGER_LITERAL(Mix_VolumeChunk(sound, -1));
+
+	//return the value
+	Toy_pushLiteralArray(&interpreter->stack, resultLiteral);
+
+	Toy_freeLiteral(resultLiteral);
+	Toy_freeLiteral(soundLiteral);
+
+	return 1;
+}
+
+static int nativeSetSoundVolume(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
+	//checks
+	if (arguments->count != 2) {
+		interpreter->errorOutput("Incorrect number of arguments passed to setSoundVolume\n");
+		return -1;
+	}
+
+	//get the sound
+	Toy_Literal volumeLiteral = Toy_popLiteralArray(arguments);
+	Toy_Literal soundLiteral = Toy_popLiteralArray(arguments);
+
+	Toy_Literal soundLiteralIdn = soundLiteral;
+	if (TOY_IS_IDENTIFIER(soundLiteral) && Toy_parseIdentifierToValue(interpreter, &soundLiteral)) {
+		Toy_freeLiteral(soundLiteralIdn);
+	}
+
+	Toy_Literal volumeLiteralIdn = volumeLiteral;
+	if (TOY_IS_IDENTIFIER(volumeLiteral) && Toy_parseIdentifierToValue(interpreter, &volumeLiteral)) {
+		Toy_freeLiteral(volumeLiteralIdn);
+	}
+
+	if (!TOY_IS_OPAQUE(soundLiteral) || !TOY_IS_INTEGER(volumeLiteral) || TOY_GET_OPAQUE_TAG(soundLiteral) != TOY_OPAQUE_TAG_SOUND) {
+		interpreter->errorOutput("Incorrect argument type passed to setSoundVolume\n");
+		Toy_freeLiteral(soundLiteral);
+		Toy_freeLiteral(volumeLiteral);
+		return -1;
+	}
+
+	//set the volume of the chunk
+	Mix_Chunk* sound = TOY_AS_OPAQUE(soundLiteral);
+	Mix_VolumeChunk(sound, TOY_AS_INTEGER(volumeLiteral));
+
+	Toy_freeLiteral(soundLiteral);
+	Toy_freeLiteral(volumeLiteral);
 
 	return 0;
 }
@@ -139,6 +210,9 @@ int Box_hookSound(Toy_Interpreter* interpreter, Toy_Literal identifier, Toy_Lite
 		{"loadSound", nativeLoadSound},
 		{"freeSound", nativeFreeSound},
 		{"playSound", nativePlaySound},
+
+		{"getSoundVolume", nativeGetSoundVolume},
+		{"setSoundVolume", nativeSetSoundVolume},
 
 		{NULL, NULL}
 	};
