@@ -7,6 +7,7 @@
 #include "lib_engine.h"
 #include "lib_node.h"
 #include "lib_input.h"
+#include "lib_music.h"
 
 #include "repl_tools.h"
 
@@ -78,6 +79,7 @@ void Box_initEngine(const char* initScript) {
 	Toy_injectNativeHook(&engine.interpreter, "engine", Box_hookEngine);
 	Toy_injectNativeHook(&engine.interpreter, "node", Box_hookNode);
 	Toy_injectNativeHook(&engine.interpreter, "input", Box_hookInput);
+	Toy_injectNativeHook(&engine.interpreter, "music", Box_hookMusic);
 
 	//load the initScript with the drive path system
 	Toy_Literal scriptLiteral = TOY_TO_STRING_LITERAL(Toy_createRefString(initScript));

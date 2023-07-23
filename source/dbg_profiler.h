@@ -1,7 +1,7 @@
 #pragma once
 
 //comment this out to enable debugging console output
-// #define DBG_DISABLE
+#define DBG_DISABLE
 
 #include <time.h>
 
