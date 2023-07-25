@@ -105,7 +105,7 @@ void Box_initEngine(const char* initScript) {
 		Toy_freeLiteral(scriptLiteral);
 		Toy_freeLiteral(driveLiteral);
 
-		fatalError("Couldn't read the given file");
+		fatalError("Couldn't read the given init file");
 	}
 
 	Toy_freeLiteral(scriptLiteral);

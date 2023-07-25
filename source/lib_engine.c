@@ -209,7 +209,7 @@ int Box_hookEngine(Toy_Interpreter* interpreter, Toy_Literal identifier, Toy_Lit
 	//store the library in an aliased dictionary
 	if (!TOY_IS_NULL(alias)) {
 		//make sure the name isn't taken
-		if (Toy_isDelcaredScopeVariable(interpreter->scope, alias)) {
+		if (Toy_isDeclaredScopeVariable(interpreter->scope, alias)) {
 			interpreter->errorOutput("Can't override an existing variable\n");
 			Toy_freeLiteral(alias);
 			return false;
