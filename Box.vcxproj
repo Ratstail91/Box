@@ -128,7 +128,7 @@ del "$(OutDir)$(ProjectName).pdb"
 </Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>./copy_libs.bat</Command>
+      <Command>$(ProjectDir)copy_libs.bat</Command>
     </PreBuildEvent>
     <Bscmake>
       <OutputFile>$(Platform)\$(Configuration)\$(TargetName).bsc</OutputFile>
@@ -160,7 +160,7 @@ del "$(OutDir)$(ProjectName).pdb"
 </Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>./copy_libs.bat</Command>
+      <Command>$(ProjectDir)copy_libs.bat</Command>
     </PreBuildEvent>
     <Bscmake>
       <OutputFile>$(Platform)\$(Configuration)\$(TargetName).bsc</OutputFile>
@@ -171,6 +171,7 @@ del "$(OutDir)$(ProjectName).pdb"
     <ClCompile Include="source\box_engine.c" />
     <ClCompile Include="source\box_node.c" />
     <ClCompile Include="source\dbg_profiler.c" />
+    <ClCompile Include="source\drive_system.c" />
     <ClCompile Include="source\lib_about.c" />
     <ClCompile Include="source\lib_engine.c" />
     <ClCompile Include="source\lib_input.c" />
@@ -187,6 +188,7 @@ del "$(OutDir)$(ProjectName).pdb"
     <ClInclude Include="source\box_engine.h" />
     <ClInclude Include="source\box_node.h" />
     <ClInclude Include="source\dbg_profiler.h" />
+    <ClInclude Include="source\drive_system.h" />
     <ClInclude Include="source\lib_about.h" />
     <ClInclude Include="source\lib_engine.h" />
     <ClInclude Include="source\lib_input.h" />
