@@ -8,7 +8,7 @@ ODIR = obj
 SRC = $(wildcard *.c)
 OBJ = $(addprefix $(ODIR)/,$(SRC:.c=.o))
 
-REPLLIBS = $(wildcard ../Toy/repl/lib*) $(wildcard ../Toy/repl/repl_tools.*)
+REPLLIBS = $(wildcard ../Toy/repl/lib*) $(wildcard ../Toy/repl/repl_tools.*) $(wildcard ../Toy/repl/drive_system.*)
 
 OUTNAME=box
 

@@ -11,6 +11,7 @@
 #include "lib_sound.h"
 
 #include "repl_tools.h"
+#include "drive_system.h"
 
 #include "toy_memory.h"
 #include "toy_lexer.h"
@@ -21,7 +22,6 @@
 #include "toy_literal_dictionary.h"
 
 #include "toy_console_colors.h"
-#include "toy_drive_system.h"
 
 #include <stdio.h>
 #include <stdlib.h>
