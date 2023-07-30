@@ -123,9 +123,8 @@
       <OutputFile>$(Outdir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <PostBuildEvent>
-      <Command>del "$(OutDir)$(ProjectName).exp"
-del "$(OutDir)$(ProjectName).pdb"
-</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(ProjectDir)copy_libs.bat</Command>
@@ -155,9 +154,8 @@ del "$(OutDir)$(ProjectName).pdb"
       <OutputFile>$(Outdir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <PostBuildEvent>
-      <Command>del "$(OutDir)$(ProjectName).exp"
-del "$(OutDir)$(ProjectName).pdb"
-</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>$(ProjectDir)copy_libs.bat</Command>
