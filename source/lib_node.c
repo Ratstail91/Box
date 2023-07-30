@@ -88,6 +88,24 @@ static int nativeLoadNode(Toy_Interpreter* interpreter, Toy_LiteralArray* argume
 	return 1;
 }
 
+static int nativeLoadEmptyNode(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
+	if (arguments->count != 0) {
+		interpreter->errorOutput("Incorrect number of arguments passed to loadEmptyNode\n");
+		return -1;
+	}
+
+	Box_Node* node = TOY_ALLOCATE(Box_Node, 1);
+	Box_initNode(node, NULL, NULL, 0);
+
+	// return the empty node
+	Toy_Literal nodeLiteral = TOY_TO_OPAQUE_LITERAL(node, BOX_OPAQUE_TAG_NODE);
+	Toy_pushLiteralArray(&interpreter->stack, nodeLiteral);
+
+	Toy_freeLiteral(nodeLiteral);
+
+	return 1;
+}
+
 static int nativeInitNode(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
 	if (arguments->count != 1) {
 		interpreter->errorOutput("Incorrect number of arguments passed to initNode\n");
@@ -156,6 +174,167 @@ static int nativePushNode(Toy_Interpreter* interpreter, Toy_LiteralArray* argume
 	Toy_freeLiteral(child);
 
 	return 0;
+}
+
+static int nativeFreeNode(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
+	if (arguments->count != 1) {
+		interpreter->errorOutput("Incorrect number of arguments passed to freeNode\n");
+		return -1;
+	}
+
+	Toy_Literal nodeLiteral = Toy_popLiteralArray(arguments);
+
+	Toy_Literal nodeLiteralIdn = nodeLiteral; //annoying
+	if (TOY_IS_IDENTIFIER(nodeLiteral) && Toy_parseIdentifierToValue(interpreter, &nodeLiteral)) {
+		Toy_freeLiteral(nodeLiteralIdn);
+	}
+
+	//check argument types
+	if (!TOY_IS_OPAQUE(nodeLiteral) || TOY_GET_OPAQUE_TAG(nodeLiteral) != BOX_OPAQUE_TAG_NODE) {
+		interpreter->errorOutput("Incorrect argument type passed to freeNode\n");
+		Toy_freeLiteral(nodeLiteral);
+		return -1;
+	}
+
+	Box_Node* node = TOY_AS_OPAQUE(nodeLiteral);
+
+	//TODO: differentiate between onFree() and freeing memory
+	Box_callRecursiveNode(node, interpreter, "onFree", NULL);
+	Box_freeNode(node);
+
+	//cleanup
+	Toy_freeLiteral(nodeLiteral);
+
+	return 0;
+}
+
+static int nativeLoadChildNode(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
+	if (arguments->count != 2) {
+		interpreter->errorOutput("Incorrect number of arguments passed to loadChildNode\n");
+		return -1;
+	}
+
+	//extract the arguments
+	Toy_Literal drivePathLiteral = Toy_popLiteralArray(arguments);
+	Toy_Literal parentLiteral = Toy_popLiteralArray(arguments);
+
+	Toy_Literal parentLiteralIdn = parentLiteral;
+	if (TOY_IS_IDENTIFIER(parentLiteral) && Toy_parseIdentifierToValue(interpreter, &parentLiteral)) {
+		Toy_freeLiteral(parentLiteralIdn);
+	}
+
+	Toy_Literal drivePathLiteralIdn = drivePathLiteral;
+	if (TOY_IS_IDENTIFIER(drivePathLiteral) && Toy_parseIdentifierToValue(interpreter, &drivePathLiteral)) {
+		Toy_freeLiteral(drivePathLiteralIdn);
+	}
+
+	//check argument types
+	if (!TOY_IS_OPAQUE(parentLiteral) || !TOY_IS_STRING(drivePathLiteral) || TOY_GET_OPAQUE_TAG(parentLiteral) != BOX_OPAQUE_TAG_NODE) {
+		interpreter->errorOutput("Incorrect argument type passed to loadChildNode\n");
+		Toy_freeLiteral(parentLiteral);
+		Toy_freeLiteral(drivePathLiteral);
+		return -1;
+	}
+
+	//get the file path
+	Toy_Literal filePathLiteral = Toy_getDrivePathLiteral(interpreter, &drivePathLiteral);
+
+	if (!TOY_IS_STRING(filePathLiteral)) {
+		Toy_freeLiteral(parentLiteral);
+		Toy_freeLiteral(drivePathLiteral);
+		Toy_freeLiteral(filePathLiteral);
+		return -1;
+	}
+
+	Toy_freeLiteral(drivePathLiteral); //not needed anymore
+
+	//load the new node
+	size_t size = 0;
+	const unsigned char* source = Toy_readFile(Toy_toCString(TOY_AS_STRING(filePathLiteral)), &size);
+	const unsigned char* tb = Toy_compileString((const char*)source, &size);
+	free((void*)source);
+
+	Box_Node* node = TOY_ALLOCATE(Box_Node, 1);
+
+	//BUGFIX: make an inner-interpreter
+	Toy_Interpreter inner;
+
+	//init the inner interpreter manually
+	Toy_initLiteralArray(&inner.literalCache);
+	Toy_initLiteralArray(&inner.stack);
+	inner.hooks = interpreter->hooks;
+	inner.scope = Toy_pushScope(interpreter->scope);
+	inner.bytecode = tb;
+	inner.length = size;
+	inner.count = 0;
+	inner.codeStart = -1;
+	inner.depth = interpreter->depth + 1;
+	inner.panic = false;
+	Toy_setInterpreterPrint(&inner, interpreter->printOutput);
+	Toy_setInterpreterAssert(&inner, interpreter->assertOutput);
+	Toy_setInterpreterError(&inner, interpreter->errorOutput);
+
+	Box_initNode(node, &inner, tb, size);
+
+	//immediately call onLoad() after running the script - for loading other nodes
+	Box_callNode(node, &inner, "onLoad", NULL);
+
+	//push the new node onto the parent node's child list
+	Box_Node* parent = (Box_Node*)TOY_AS_OPAQUE(parentLiteral);
+	Box_pushNode(parent, node);
+
+	//leave the child on the stack
+	Toy_Literal nodeLiteral = TOY_TO_OPAQUE_LITERAL(node, BOX_OPAQUE_TAG_NODE);
+	Toy_pushLiteralArray(&interpreter->stack, nodeLiteral);
+
+	//cleanup (NOT the scope - that needs to hang around)
+	node->scope = inner.scope;
+
+	Toy_freeLiteralArray(&inner.stack);
+	Toy_freeLiteralArray(&inner.literalCache);
+	Toy_freeLiteral(filePathLiteral);
+	Toy_freeLiteral(parentLiteral);
+	Toy_freeLiteral(nodeLiteral);
+
+	return 1;
+}
+
+static int nativeLoadEmptyChildNode(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
+	if (arguments->count != 1) {
+		interpreter->errorOutput("Incorrect number of arguments passed to loadEmptyChildNode\n");
+		return -1;
+	}
+
+	//extract the arguments
+	Toy_Literal parentLiteral = Toy_popLiteralArray(arguments);
+
+	Toy_Literal parentLiteralIdn = parentLiteral;
+	if (TOY_IS_IDENTIFIER(parentLiteral) && Toy_parseIdentifierToValue(interpreter, &parentLiteral)) {
+		Toy_freeLiteral(parentLiteralIdn);
+	}
+
+	//check argument types
+	if (!TOY_IS_OPAQUE(parentLiteral) || TOY_GET_OPAQUE_TAG(parentLiteral) != BOX_OPAQUE_TAG_NODE) {
+		interpreter->errorOutput("Incorrect argument type passed to loadEmptyChildNode\n");
+		Toy_freeLiteral(parentLiteral);
+		return -1;
+	}
+
+	Box_Node* node = TOY_ALLOCATE(Box_Node, 1);
+	Box_initNode(node, NULL, NULL, 0);
+
+	//push the new node onto the parent node's child list
+	Box_Node* parent = (Box_Node*)TOY_AS_OPAQUE(parentLiteral);
+	Box_pushNode(parent, node);
+
+	//leave the child on the stack
+	Toy_Literal nodeLiteral = TOY_TO_OPAQUE_LITERAL(node, BOX_OPAQUE_TAG_NODE);
+	Toy_pushLiteralArray(&interpreter->stack, nodeLiteral);
+
+	Toy_freeLiteral(parentLiteral);
+	Toy_freeLiteral(nodeLiteral);
+
+	return 1;
 }
 
 static int nativeGetChildNode(Toy_Interpreter* interpreter, Toy_LiteralArray* arguments) {
@@ -1919,8 +2098,12 @@ int Box_hookNode(Toy_Interpreter* interpreter, Toy_Literal identifier, Toy_Liter
 	//build the natives list
 	Natives natives[] = {
 		{"loadNode", nativeLoadNode},
+		{"loadEmptyNode", nativeLoadEmptyNode},
 		{"initNode", nativeInitNode},
 		{"pushNode", nativePushNode},
+		{"freeNode", nativeFreeNode},
+		{"loadChildNode", nativeLoadChildNode},
+		{"loadEmptyChildNode", nativeLoadEmptyChildNode},
 		{"getChildNode", nativeGetChildNode},
 		{"freeChildNode", nativeFreeChildNode},
 		{"sortChildrenNode", nativeSortChildrenNode},

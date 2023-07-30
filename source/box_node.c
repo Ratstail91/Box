@@ -26,6 +26,11 @@ void Box_initNode(Box_Node* node, Toy_Interpreter* interpreter, const unsigned c
 
 	Toy_initLiteralDictionary(node->functions);
 
+	//skip empty nodes
+	if (tb == NULL) {
+		return;
+	}
+
 	//run bytecode
 	Toy_runInterpreter(interpreter, tb, size);
 
@@ -38,7 +43,7 @@ void Box_initNode(Box_Node* node, Toy_Interpreter* interpreter, const unsigned c
 			continue;
 		}
 
-		//if this variable is a function (this outmodes import and export)
+		//if this variable is a function
 		Toy_private_dictionary_entry* entry = &variablesPtr->entries[i];
 		if (TOY_IS_FUNCTION(entry->value)) {
 			//save a copy
