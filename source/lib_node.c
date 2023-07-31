@@ -59,7 +59,7 @@ static int nativeLoadNode(Toy_Interpreter* interpreter, Toy_LiteralArray* argume
 	inner.hooks = interpreter->hooks;
 	inner.scope = Toy_pushScope(interpreter->scope);
 	inner.bytecode = tb;
-	inner.length = size;
+	inner.length = (int)size;
 	inner.count = 0;
 	inner.codeStart = -1;
 	inner.depth = interpreter->depth + 1;
@@ -265,7 +265,7 @@ static int nativeLoadChildNode(Toy_Interpreter* interpreter, Toy_LiteralArray* a
 	inner.hooks = interpreter->hooks;
 	inner.scope = Toy_pushScope(interpreter->scope);
 	inner.bytecode = tb;
-	inner.length = size;
+	inner.length = (int)size;
 	inner.count = 0;
 	inner.codeStart = -1;
 	inner.depth = interpreter->depth + 1;
