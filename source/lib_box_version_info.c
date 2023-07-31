@@ -1,8 +1,10 @@
-#include "lib_about.h"
+#include "lib_box_version_info.h"
+
+#include "box_common.h"
 
 #include "toy_memory.h"
 
-int Toy_hookAbout(Toy_Interpreter* interpreter, Toy_Literal identifier, Toy_Literal alias) {
+int Toy_hookBoxVersionInfo(Toy_Interpreter* interpreter, Toy_Literal identifier, Toy_Literal alias) {
 	//the about keys
 	Toy_Literal majorKeyLiteral = TOY_TO_STRING_LITERAL(Toy_createRefString("major"));
 	Toy_Literal minorKeyLiteral = TOY_TO_STRING_LITERAL(Toy_createRefString("minor"));
@@ -18,10 +20,10 @@ int Toy_hookAbout(Toy_Interpreter* interpreter, Toy_Literal identifier, Toy_Lite
 	Toy_Literal authorIdentifierLiteral = TOY_TO_IDENTIFIER_LITERAL(Toy_createRefString("author"));
 
 	//the about values
-	Toy_Literal majorLiteral = TOY_TO_INTEGER_LITERAL(TOY_VERSION_MAJOR);
-	Toy_Literal minorLiteral = TOY_TO_INTEGER_LITERAL(TOY_VERSION_MINOR);
-	Toy_Literal patchLiteral = TOY_TO_INTEGER_LITERAL(TOY_VERSION_PATCH);
-	Toy_Literal buildLiteral = TOY_TO_STRING_LITERAL(Toy_createRefString(TOY_VERSION_BUILD));
+	Toy_Literal majorLiteral = TOY_TO_INTEGER_LITERAL(BOX_VERSION_MAJOR);
+	Toy_Literal minorLiteral = TOY_TO_INTEGER_LITERAL(BOX_VERSION_MINOR);
+	Toy_Literal patchLiteral = TOY_TO_INTEGER_LITERAL(BOX_VERSION_PATCH);
+	Toy_Literal buildLiteral = TOY_TO_STRING_LITERAL(Toy_createRefString(BOX_VERSION_BUILD));
 	Toy_Literal authorLiteral = TOY_TO_STRING_LITERAL(Toy_createRefString("Kayne Ruse, KR Game Studios"));
 
 	//store as an aliased dictionary

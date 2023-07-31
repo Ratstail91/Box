@@ -4,11 +4,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define BOX_VERSION_MAJOR 0
-#define BOX_VERSION_MINOR 2
-#define BOX_VERSION_PATCH 0
-#define BOX_VERSION_BUILD __DATE__ " " __TIME__
-
 //platform/compiler-specific instructions
 #if defined(__linux__) || defined(__MINGW32__) || defined(__GNUC__)
 
@@ -41,6 +36,14 @@
 
 #endif
 
+//version info
+#define BOX_VERSION_MAJOR 0
+#define BOX_VERSION_MINOR 2
+#define BOX_VERSION_PATCH 1
+#define BOX_VERSION_BUILD Box_private_version_build()
+BOX_API const char* Box_private_version_build();
+
+//debugging tools
 #include <assert.h>
 
 //test variable sizes based on platform
