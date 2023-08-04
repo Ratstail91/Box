@@ -173,6 +173,7 @@
     <ClCompile Include="source\lib_box_version_info.c" />
     <ClCompile Include="source\lib_engine.c" />
     <ClCompile Include="source\lib_input.c" />
+    <ClCompile Include="source\lib_math.c" />
     <ClCompile Include="source\lib_music.c" />
     <ClCompile Include="source\lib_node.c" />
     <ClCompile Include="source\lib_random.c" />
@@ -191,6 +192,7 @@
     <ClInclude Include="source\lib_box_version_info.h" />
     <ClInclude Include="source\lib_engine.h" />
     <ClInclude Include="source\lib_input.h" />
+    <ClInclude Include="source\lib_math.h" />
     <ClInclude Include="source\lib_music.h" />
     <ClInclude Include="source\lib_node.h" />
     <ClInclude Include="source\lib_random.h" />
