@@ -3,6 +3,7 @@
 #include "lib_toy_version_info.h"
 #include "lib_box_version_info.h"
 #include "lib_standard.h"
+#include "lib_math.h"
 #include "lib_random.h"
 #include "lib_runner.h"
 #include "lib_engine.h"
@@ -77,6 +78,7 @@ void Box_initEngine(const char* initScript) {
 	Toy_injectNativeHook(&engine.interpreter, "toy_version_info", Toy_hookToyVersionInfo);
 	Toy_injectNativeHook(&engine.interpreter, "box_version_info", Toy_hookBoxVersionInfo);
 	Toy_injectNativeHook(&engine.interpreter, "standard", Toy_hookStandard);
+	Toy_injectNativeHook(&engine.interpreter, "math", Toy_hookMath);
 	Toy_injectNativeHook(&engine.interpreter, "random", Toy_hookRandom);
 	Toy_injectNativeHook(&engine.interpreter, "runner", Toy_hookRunner);
 	Toy_injectNativeHook(&engine.interpreter, "engine", Box_hookEngine);
