@@ -92,8 +92,6 @@ void Box_initEngine(const char* initScript) {
 	Toy_Literal driveLiteral = Toy_getDrivePathLiteral(&engine.interpreter, &scriptLiteral); //only takes the interpreter for the error function
 
 	if (TOY_IS_NULL(driveLiteral)) {
-		Toy_printLiteral(scriptLiteral);
-
 		Toy_freeLiteral(scriptLiteral);
 		Toy_freeLiteral(driveLiteral);
 
@@ -104,8 +102,6 @@ void Box_initEngine(const char* initScript) {
 	const unsigned char* source = Toy_readFile(Toy_toCString(TOY_AS_STRING(driveLiteral)), &size);
 
 	if (!source) {
-		Toy_printLiteral(driveLiteral);
-
 		Toy_freeLiteral(scriptLiteral);
 		Toy_freeLiteral(driveLiteral);
 
@@ -519,6 +515,12 @@ void Box_execEngine() {
 
 	Dbg_initTimer(&dbgTimer);
 	Dbg_initFPSCounter(&fps);
+
+	//initial root node check
+	execLoadRootNode();
+	if (engine.rootNode == NULL) {
+		fatalError("No root node found (did you forget to load one?)");
+	}
 
 	while (engine.running) {
 		Dbg_tickFPSCounter(&fps);

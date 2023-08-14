@@ -112,14 +112,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;BOX_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SDL2Dir)\include;$(SDL2ImageDir)\include;$(SDL2MixerDir)\include;$(SDL2TTFDir)\include;%(SolutionDir)Toy\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SDL2Dir)\include;$(SDL2ImageDir)\include;$(SDL2MixerDir)\include;$(SDL2TTFDir)\include;$(ProjectDir)Toy\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SDL2.lib;SDL2_image.lib;SDL2_mixer.lib;SDL2_ttf.lib;Toy.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SDL2Dir)\lib\x64;$(SDL2ImageDir)\lib\x64;$(SDL2MixerDir)\lib\x64;$(SDL2TTFDir)\lib\x64;$(SolutionDir)out;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SDL2Dir)\lib\x64;$(SDL2ImageDir)\lib\x64;$(SDL2MixerDir)\lib\x64;$(SDL2TTFDir)\lib\x64;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <OutputFile>$(Outdir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <PostBuildEvent>
@@ -141,7 +141,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;BOX_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SDL2Dir)\include;$(SDL2ImageDir)\include;$(SDL2MixerDir)\include;$(SDL2TTFDir)\include;%(SolutionDir)Toy\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SDL2Dir)\include;$(SDL2ImageDir)\include;$(SDL2MixerDir)\include;$(SDL2TTFDir)\include;$(ProjectDir)Toy\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
@@ -150,7 +150,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SDL2.lib;SDL2_image.lib;SDL2_mixer.lib;SDL2_ttf.lib;Toy.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SDL2Dir)\lib\x64;$(SDL2ImageDir)\lib\x64;$(SDL2MixerDir)\lib\x64;$(SDL2TTFDir)\lib\x64;$(SolutionDir)out;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SDL2Dir)\lib\x64;$(SDL2ImageDir)\lib\x64;$(SDL2MixerDir)\lib\x64;$(SDL2TTFDir)\lib\x64;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <OutputFile>$(Outdir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <PostBuildEvent>
