@@ -1,3 +1,5 @@
+***WARNING***: This repo is out of date, and still uses Toy v1. I'm currently rewriting Toy as v2, and this will receive a similar treatment - but I'm not there yet.
+
 # The Box Engine
 
 This game engine utilizes the [Toy Programming Language](https://toylang.com).
